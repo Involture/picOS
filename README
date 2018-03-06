@@ -1,0 +1,73 @@
+# picOS
+Lets make OSDEV disclaimers lie
+
+# De l'usage de ce README
+
+Alors oui j'aime bien les README, parce que c'est inclus dans le git et ca
+permet de le faire évoluer au fil des commit. Je pense pas que ce soit pour tous
+les usages par contre.
+
+En gros le README doit servir à inscrire les informations susceptible d'etre
+consultees plusieurs fois. Pour les autres messages on utilisera une messagerie
+instantanee !
+
+Les informations que vous mettez dans ce README ne sont pas forcement pour les
+autres, vous pouvez y mettre des infos pour vous, pour vous en rappeler ou a
+titre indicatif.
+
+Enfin je suis vraiment un putain de maniaque alors merci de garder le fichier un
+peu structure.
+
+
+# LES CONVENTIONS PRATIQUES (SUPER IMPORTANT).
+A completer par vous
+
+Pour ne pas perdre en efficacité, et ne pas frustrer les manies de chacun
+(surtout les miennes), c'est mieux de respecter quelques regles. Hesitez pas a
+en rajouter ou a contester celles que j'ai inscrites.
+
+  PARTIE PRATIQUE
+  * Tout ceux qui savent pas utiliser git (moi compris) on prend une heure pour
+  lire un tuto git et on l'utilise proprement. En particulier :
+    - uniquement des rebase pour integrer les changements locaux au git
+    - A peu pres : Un commit par idee (par heure en gros).
+                   Un ou deux push par jour.
+    - Des messages de commit explicites.
+    - Bon usage des branches (si idee alternative).
+    - Ecrire, utiliser et maintenir un .gitignore correct.
+  * On garde un arbre de fichier propre et ordonne.
+  * Cohérence dans l'usage de la langue : 
+    hormis ce fichier, tout en anglais : variables, abreviations, commentaires,
+    messages de commit, noms de fichiers, noms de dossiers ...
+
+  PARTIE CODE
+  * Ne pas ecrire apres la colonne 80.
+  * 2 espaces par indentation (comme au début de cette ligne).
+  * Conventions d'indentation C a definir ci dessous :
+    -
+    -
+    -
+  * Des noms de variables explicites (faut au moins essayer).
+  * Convention underscore pour les noms de variables.
+  * Documenter TOUT
+  * Avoir des conventions communes de documentation.
+  * Commenter tout bout de code non trivial
+
+# PLANNING.
+Tres important aussi, ca evite de tout faire la derniere semaine.
+
+  * Date de début : Mardi 6 mars.
+  * Date de rendu : Dimanche 20 mai.
+  * Temps disponible : 75 jours = 11 semaines.
+
+Organisation par semaine :
+  * Jusqu'au Mardi 27 mars : 3 SEMAINES
+    - Lecture de documentation.
+    - Ajout de la documentation d'interet commun ou durable au git.
+    - Definition du cadre exacte du projet.
+    - Ecriture d'une synthese du travail prévisionnel.
+    - Ecriture du planning prévisionnel jusqu'au rendu.
+  * ...
+
+
+# AUTRES SECTIONS A AJOUTER A VOLONTER.
