@@ -3,7 +3,14 @@ PROJECTS="`#libc not used yet !`kernel"
 
 export MAKE=${MAKE:-make}
 export HOST=${HOST:-$(./default-host.sh)}
-. ./path.sh #Update your path here to include your cross compilers
+if [ -f path ] ; then
+  export PATH=$(cat path):$PATH
+else
+  echo "error : path file not found"
+  echo "please add a file path with the path to your cross compilers"
+  exit 1
+fi
+echo $PATH
 
 export AR=${HOST}-ar
 export AS=${HOST}-as
