@@ -1,11 +1,11 @@
-/* Not available as the standard library is not used yet
-  
 #include <stdio.h>
-*/
-
-#include <kernel/tty.h>
+#include <kernel/tty_ext.h>
 
 void kernel_main(void) {
-	terminal_initialize();
-	terminal_write("Hello, kernel World!\n", 21);
+	tty_ext_initialize();
+  char i = 0;
+  while(1) {
+    i++;
+    printf("hey, salut ! : %c", i);
+  };
 }
