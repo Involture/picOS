@@ -27,8 +27,8 @@ enum ps2_ctrl_conf {
 enum ps2_ctrl_cmd {
   PS2_CTRL_CMD_GET_CONF   = 0x20,   // Get the controller configuration byte
   PS2_CTRL_CMD_WRITE_CONF = 0x60,   // Write controller configuration byte
-  PS2_CTRL_CMD_ENBL_P2    = 0xA7,   // Enable the second PS/2 port
-  PS2_CTRL_CMD_DSBL_P2    = 0xA8,   // Disable the second PS/2 port
+  PS2_CTRL_CMD_ENBL_P2    = 0xA8,   // Enable the second PS/2 port
+  PS2_CTRL_CMD_DSBL_P2    = 0xA7,   // Disable the second PS/2 port
   PS2_CTRL_CMD_TEST_P2    = 0xA9,   // Test second port. 0x00 if test passed
   PS2_CTRL_CMD_TEST       = 0xAA,   // Global test. Return 0x55 if test passed
   PS2_CTRL_CMD_TEST_P1    = 0xAB,   // Test first port. 0x00 if test passed

@@ -1,6 +1,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include <stddef.h>
+#include <stdio.h>
 
 #include <kernel/dt.h>
 
@@ -70,6 +71,21 @@ static void make_gdt(uint64_t* dest, struct gdt_entry* source, size_t size) {
 static void make_idt(uint64_t* dest, struct idt_entry* source, size_t size) {
   for (size_t i = 0; i < size; i++)
     dest[i] = make_idt_entry(source[i]);
+}
+
+void print_dt(uint64_t* dt, size_t size) {
+  for (size_t i = 0; i < size; i++)
+    printf("dt_entry %x : %w\n", i, dt + i, 8);
+};
+
+void dt_print_gdt(void) {
+  puts("Printing generated gdt :");
+  print_dt(picOS_gdt, GDT_SIZE);
+}
+
+void dt_print_idt(void) {
+  puts("Printing generated idt :");
+  print_dt(picOS_idt, 5);
 }
 
 void dt_init_gdt(void) {

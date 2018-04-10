@@ -43,10 +43,14 @@ struct idt_entry {
 extern void dt_set_gdt(uint64_t*, size_t);
 extern void dt_set_idt(uint64_t*, size_t);
 extern void dt_reload_cs(void);
+extern uint32_t* dt_drop_seg(void);
+extern void dt_raise(void);
 
 extern struct gdt_entry gdt_conf[];
 extern struct idt_entry idt_conf[];
 void dt_init_gdt(void);
 void dt_init_idt(void);
+void dt_print_gdt(void);
+void dt_print_idt(void);
 
 #endif
