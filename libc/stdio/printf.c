@@ -3,6 +3,7 @@
 #include <stdarg.h>
 #include <stdio.h>
 #include <string.h>
+#include <kernel/tty_ext.h>
 
 static bool print(const char* data, size_t length) {
 	const unsigned char* bytes = (const unsigned char*) data;
@@ -10,6 +11,16 @@ static bool print(const char* data, size_t length) {
 		if (putchar(bytes[i]) == EOF)
 			return false;
 	return true;
+}
+
+static char cvrt_array[16] = {'0', '1', '2', '3', '4', '5', '6', '7',
+                              '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
+
+static void mk_hexa (char* high_dest, char* low_dest, char c) {
+  char high = c >> 4 & (char) 0x0F;
+  char low = c & (char) 0x0F;
+  *high_dest = cvrt_array[(size_t) high];
+  *low_dest = cvrt_array[(size_t) low];
 }
 
 int printf(const char* restrict format, ...) {
@@ -50,7 +61,8 @@ int printf(const char* restrict format, ...) {
 			if (!print(&c, sizeof(c)))
 				return -1;
 			written++;
-		} else if (*format == 's') {
+		} 
+    else if (*format == 's') {
 			format++;
 			const char* str = va_arg(parameters, const char*);
 			size_t len = strlen(str);
@@ -61,7 +73,24 @@ int printf(const char* restrict format, ...) {
 			if (!print(str, len))
 				return -1;
 			written += len;
-		} else {
+		} 
+    else if (*format == 'x') {
+      format++;
+      char c = (char) va_arg(parameters, int);
+      if (maxrem < 2) {
+        //TODO: Set errno to EOVERFLOW
+        return -1;
+      }
+      char high; 
+      char low;
+      mk_hexa(&high, &low, c);
+      if (!print(&high, sizeof(high)))
+        return -1;
+      if (!print(&low, sizeof(low)))
+        return -1;
+      written += 2;
+    }
+    else {
 			format = format_begun_at;
 			size_t len = strlen(format);
 			if (maxrem < len) {
