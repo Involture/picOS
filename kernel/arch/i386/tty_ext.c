@@ -1,6 +1,7 @@
 #include <stddef.h>
 #include <stdint.h>
 #include <string.h>
+#include <stdbool.h>
 
 #include <kernel/tty.h>
 #include <kernel/tty_ext.h>
@@ -68,6 +69,25 @@ static void retreive_history(void) {
   get_screen(term_buffer, screen_ofs);
 }
 
+/* Handling special characters */
+
+static void new_line(void) {
+  tty_ext_putchar(' ');
+  while (term_column != 0)
+    tty_ext_putchar(' ');
+};
+
+static bool handle_special_char(unsigned char ic) {
+  switch (ic) {
+    case '\n':
+      new_line();
+      break;
+    default:
+      return false;
+  };
+  return true;
+};
+
 /* Extern functions */
 
 void tty_ext_initialize(void) {
@@ -113,6 +133,8 @@ void tty_ext_set_color(uint8_t color) {
 
 void tty_ext_putchar(char c) {
   unsigned char ic = (unsigned char) c;
+  if (handle_special_char(ic))
+    return;
   uint16_t entry = vga_entry(ic, term_color);
   size_t term_row = VGA_HEIGHT - 1 + screen_ofs;
   term_buffer[term_column + term_row * VGA_WIDTH] = entry;

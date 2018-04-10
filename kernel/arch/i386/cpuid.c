@@ -3,6 +3,9 @@
 
 uint32_t cpuid_value = 0;
 uint32_t* cpuid = &cpuid_value;
-void set_cpuid(void) {
+void cpuid_set(void) {
   get_cpuid(cpuid);
-};
+}
+bool cpuid_has_feat(int feat) {
+  return (bool) (*cpuid & feat);
+}

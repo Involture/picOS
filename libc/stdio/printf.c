@@ -5,22 +5,16 @@
 #include <string.h>
 #include <kernel/tty_ext.h>
 
-static bool print(const char* data, size_t length) {
-	const unsigned char* bytes = (const unsigned char*) data;
-	for (size_t i = 0; i < length; i++)
-		if (putchar(bytes[i]) == EOF)
-			return false;
-	return true;
-}
+#define print tty_ext_write
 
-static char cvrt_array[16] = {'0', '1', '2', '3', '4', '5', '6', '7',
+static char hex_cvrt_array[16] = {'0', '1', '2', '3', '4', '5', '6', '7',
                               '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
 
-static void mk_hexa (char* high_dest, char* low_dest, char c) {
-  char high = c >> 4 & (char) 0x0F;
-  char low = c & (char) 0x0F;
-  *high_dest = cvrt_array[(size_t) high];
-  *low_dest = cvrt_array[(size_t) low];
+static void hex_cvrt (char* dest, const char* src, size_t size) {
+  for (size_t i = 0; i < size; i++) {
+    dest[2 * i] = hex_cvrt_array[src[i] >> 4 & (char) 0x0F];
+    dest[2 * i + 1] = hex_cvrt_array[src[i] & (char) 0x0F];
+  };
 }
 
 int printf(const char* restrict format, ...) {
@@ -42,8 +36,7 @@ int printf(const char* restrict format, ...) {
 				// TODO: Set errno to EOVERFLOW.
 				return -1;
 			}
-			if (!print(format, amount))
-				return -1;
+			print(format, amount);
 			format += amount;
 			written += amount;
 			continue;
@@ -58,8 +51,7 @@ int printf(const char* restrict format, ...) {
 				// TODO: Set errno to EOVERFLOW.
 				return -1;
 			}
-			if (!print(&c, sizeof(c)))
-				return -1;
+			print(&c, sizeof(c));
 			written++;
 		} 
     else if (*format == 's') {
@@ -70,8 +62,7 @@ int printf(const char* restrict format, ...) {
 				// TODO: Set errno to EOVERFLOW.
 				return -1;
 			}
-			if (!print(str, len))
-				return -1;
+			print(str, len);
 			written += len;
 		} 
     else if (*format == 'x') {
@@ -81,14 +72,25 @@ int printf(const char* restrict format, ...) {
         //TODO: Set errno to EOVERFLOW
         return -1;
       }
-      char high; 
-      char low;
-      mk_hexa(&high, &low, c);
-      if (!print(&high, sizeof(high)))
-        return -1;
-      if (!print(&low, sizeof(low)))
-        return -1;
+      char dest[2];
+      hex_cvrt(dest, &c, sizeof(c));
+      print(dest, sizeof(dest));
       written += 2;
+    }
+    else if (*format == 'w') {
+      format++;
+      const char* bytes = va_arg(parameters, const char*);
+      size_t size = va_arg(parameters, size_t);
+      if (maxrem < size) {
+        // TODO: set errno to EOVERFLOW
+        return -1;
+      }
+      char dest[2];
+      for (size_t i = 0; i < size; i++) {
+        hex_cvrt(dest, bytes + i, sizeof(char));
+        print(dest, sizeof(dest));
+      }
+      written += 2 * size;
     }
     else {
 			format = format_begun_at;
@@ -97,8 +99,7 @@ int printf(const char* restrict format, ...) {
 				// TODO: Set errno to EOVERFLOW.
 				return -1;
 			}
-			if (!print(format, len))
-				return -1;
+		  print(format, len);
 			written += len;
 			format += len;
 		}

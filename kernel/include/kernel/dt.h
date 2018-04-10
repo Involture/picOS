@@ -5,6 +5,9 @@
 #include <stddef.h>
 #include <stdint.h>
 
+#define GDT_SIZE 3
+#define IDT_SIZE 256
+
 struct gdt_entry {
   uint32_t base;  // Base address for the segment
   uint32_t limit; // Limit of the segment
@@ -21,10 +24,29 @@ struct gdt_entry {
   bool gr;        // Granularity. If set limit is multiplied by 0x400.
   bool sz;        // if set, sector in 32 bit else sector in 16 bit.
 };
-void make_gdt(uint64_t*, struct gdt_entry*, size_t);
 
-extern void initialize_gdt(void);
-extern void set_gdt(uint64_t* gdt_ptr, size_t size);
-extern void initialize_gdt(void);
-extern void reload_cs(void);
+enum idt_gate_type {
+  IDT_GATE_TYPE_TASK      = 0x5,
+  IDT_GATE_TYPE_INTERRUPT = 0xE,
+  IDT_GATE_TYPE_TRAP      = 0xF,
+};
+
+struct idt_entry {
+  uint16_t selector;        // Segment selector containing the I handler code
+  uint32_t offset;          // Offset of the ISR in the segment
+  enum idt_gate_type type;  // Type of gate
+  uint8_t dpl;              // Descriptor privilege level
+  bool prs;                 // Disable if interrupt not used
+};
+
+// Assembly functions
+extern void dt_set_gdt(uint64_t*, size_t);
+extern void dt_set_idt(uint64_t*, size_t);
+extern void dt_reload_cs(void);
+
+extern struct gdt_entry gdt_conf[];
+extern struct idt_entry idt_conf[];
+void dt_init_gdt(void);
+void dt_init_idt(void);
+
 #endif

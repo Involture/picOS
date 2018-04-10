@@ -1,13 +1,6 @@
-#include <stddef.h>
-#include <stdbool.h>
-#include <stdint.h>
 #include <kernel/dt.h>
 
-#define GDT_SIZE 3
-
-uint64_t picOS_gdt[GDT_SIZE] = {0};
-
-static struct gdt_entry gdt_abstr[GDT_SIZE] = {
+struct gdt_entry gdt_conf[GDT_SIZE] = {
   {},
   {.limit = 0xFFFFFFFF,
    .prs   = true,
@@ -25,7 +18,4 @@ static struct gdt_entry gdt_abstr[GDT_SIZE] = {
   }
 };
 
-void initialize_gdt(void) {
-  make_gdt(picOS_gdt, gdt_abstr, GDT_SIZE);
-  set_gdt(picOS_gdt, sizeof(picOS_gdt));
-};
+struct idt_entry idt_conf[IDT_SIZE] = {0};

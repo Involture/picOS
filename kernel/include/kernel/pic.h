@@ -21,5 +21,4 @@
 
 void pic_sendEOI(unsigned char);
 void pic_remap(int, int);
-extern void disable_apic(void);
-
+extern void pic_disable_apic(void);
