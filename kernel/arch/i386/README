@@ -1,0 +1,17 @@
+Une rapide description de tout le fatra de fichier qui regne ici
+
+Les fichiers suffixes par _as contiennent les fonctions ecritent en assembleur
+necessaires aux fichiers correspondant (i.e. non suffixes)
+
+boot      : le bootloader
+tty       : les fonctions basique d'écriture sur le la console virtuelle
+tty_ext   : Un terminal avec historique et defilement
+dt        : les fonctions permettant l'initialisation de la gdt et de l'idt
+dtconf    : l'initialisation de structures abstraites de la gdt et de l'idt 
+            servant a leur initialisation
+cpuid     : permet de recuperer le cpuid
+pic       : Configuration et communication avec le pic
+port      : Fonction servant a l'utilisation des ports processeurs en general
+ps2_ctrl  : Fonction servant a dialoguer avec le controlleur ps2
+interrupt : Contient les procedure de service d'interruption
+dump      : Des fonctions pour afficher le contenu des registres (debug)

@@ -1,0 +1,302 @@
+.att_syntax noprefix
+
+.section .text
+
+.global debug1
+.global debug2
+.global debug3
+
+.global interrup_master_isr
+.global interrupt_as_isr_wrapper
+.global interrupt_as_raise
+.type interrupt_as_isr_wrapper, @function
+.type interrupt_as_raise, @function
+
+#void interrupt_as_raise(void)
+interrupt_as_raise :
+  int $126
+  ret
+
+#void interrupt_as_isr_wrapper(void)
+
+# These macro are used to properly set the interrupt code and number,
+# see below
+.macro isr_wrapper_entry_point_no_code i
+  push $0                     # Push 0 as an error code
+  push $\i                    # Push the interrupt number
+  jmp real_isr_wrapper    
+.endm
+.macro isr_wrapper_entry_point i
+  push $\i                    # Push the interrupt number
+  jmp real_isr_wrapper
+.endm
+
+real_isr_wrapper :
+  pushal                      # Register dump
+  cld                         # C convention imposes direction flag cleared
+  call *interrupt_master_isr  # Calling :)
+  popal                       # Poping registers
+  pop                         # Discard interrupt number
+  pop                         # Discard interrupt code
+  iret
+
+interrupt_as_isr_wrapper :
+  isr_wrapper_entry_point_no_code 0
+  isr_wrapper_entry_point_no_code 1
+  isr_wrapper_entry_point_no_code 2
+  isr_wrapper_entry_point_no_code 3
+  isr_wrapper_entry_point_no_code 4
+  isr_wrapper_entry_point_no_code 5
+  isr_wrapper_entry_point_no_code 6
+  isr_wrapper_entry_point_no_code 7
+debug1:
+  isr_wrapper_entry_point 8
+debug2:
+  isr_wrapper_entry_point_no_code 9
+debug3
+  isr_wrapper_entry_point 10
+  isr_wrapper_entry_point 11
+  isr_wrapper_entry_point 12
+  isr_wrapper_entry_point 13
+  isr_wrapper_entry_point 14
+  isr_wrapper_entry_point_no_code 15
+  isr_wrapper_entry_point_no_code 16
+  isr_wrapper_entry_point 17
+  isr_wrapper_entry_point_no_code 18
+  isr_wrapper_entry_point_no_code 19
+  isr_wrapper_entry_point_no_code 20
+  isr_wrapper_entry_point_no_code 21
+  isr_wrapper_entry_point_no_code 22
+  isr_wrapper_entry_point_no_code 23
+  isr_wrapper_entry_point_no_code 24
+  isr_wrapper_entry_point_no_code 25
+  isr_wrapper_entry_point_no_code 26
+  isr_wrapper_entry_point_no_code 27
+  isr_wrapper_entry_point_no_code 28
+  isr_wrapper_entry_point_no_code 29
+  isr_wrapper_entry_point 30
+  isr_wrapper_entry_point_no_code 31
+  isr_wrapper_entry_point_no_code 32
+  isr_wrapper_entry_point_no_code 33
+  isr_wrapper_entry_point_no_code 34
+  isr_wrapper_entry_point_no_code 35
+  isr_wrapper_entry_point_no_code 36
+  isr_wrapper_entry_point_no_code 37
+  isr_wrapper_entry_point_no_code 38
+  isr_wrapper_entry_point_no_code 39
+  isr_wrapper_entry_point_no_code 40
+  isr_wrapper_entry_point_no_code 41
+  isr_wrapper_entry_point_no_code 42
+  isr_wrapper_entry_point_no_code 43
+  isr_wrapper_entry_point_no_code 44
+  isr_wrapper_entry_point_no_code 45
+  isr_wrapper_entry_point_no_code 46
+  isr_wrapper_entry_point_no_code 47
+  isr_wrapper_entry_point_no_code 48
+  isr_wrapper_entry_point_no_code 49
+  isr_wrapper_entry_point_no_code 50
+  isr_wrapper_entry_point_no_code 51
+  isr_wrapper_entry_point_no_code 52
+  isr_wrapper_entry_point_no_code 53
+  isr_wrapper_entry_point_no_code 54
+  isr_wrapper_entry_point_no_code 55
+  isr_wrapper_entry_point_no_code 56
+  isr_wrapper_entry_point_no_code 57
+  isr_wrapper_entry_point_no_code 58
+  isr_wrapper_entry_point_no_code 59
+  isr_wrapper_entry_point_no_code 60
+  isr_wrapper_entry_point_no_code 61
+  isr_wrapper_entry_point_no_code 62
+  isr_wrapper_entry_point_no_code 63
+  isr_wrapper_entry_point_no_code 64
+  isr_wrapper_entry_point_no_code 65
+  isr_wrapper_entry_point_no_code 66
+  isr_wrapper_entry_point_no_code 67
+  isr_wrapper_entry_point_no_code 68
+  isr_wrapper_entry_point_no_code 69
+  isr_wrapper_entry_point_no_code 70
+  isr_wrapper_entry_point_no_code 71
+  isr_wrapper_entry_point_no_code 72
+  isr_wrapper_entry_point_no_code 73
+  isr_wrapper_entry_point_no_code 74
+  isr_wrapper_entry_point_no_code 75
+  isr_wrapper_entry_point_no_code 76
+  isr_wrapper_entry_point_no_code 77
+  isr_wrapper_entry_point_no_code 78
+  isr_wrapper_entry_point_no_code 79
+  isr_wrapper_entry_point_no_code 80
+  isr_wrapper_entry_point_no_code 81
+  isr_wrapper_entry_point_no_code 82
+  isr_wrapper_entry_point_no_code 83
+  isr_wrapper_entry_point_no_code 84
+  isr_wrapper_entry_point_no_code 85
+  isr_wrapper_entry_point_no_code 86
+  isr_wrapper_entry_point_no_code 87
+  isr_wrapper_entry_point_no_code 88
+  isr_wrapper_entry_point_no_code 89
+  isr_wrapper_entry_point_no_code 90
+  isr_wrapper_entry_point_no_code 91
+  isr_wrapper_entry_point_no_code 92
+  isr_wrapper_entry_point_no_code 93
+  isr_wrapper_entry_point_no_code 94
+  isr_wrapper_entry_point_no_code 95
+  isr_wrapper_entry_point_no_code 96
+  isr_wrapper_entry_point_no_code 97
+  isr_wrapper_entry_point_no_code 98
+  isr_wrapper_entry_point_no_code 99
+  isr_wrapper_entry_point_no_code 100
+  isr_wrapper_entry_point_no_code 101
+  isr_wrapper_entry_point_no_code 102
+  isr_wrapper_entry_point_no_code 103
+  isr_wrapper_entry_point_no_code 104
+  isr_wrapper_entry_point_no_code 105
+  isr_wrapper_entry_point_no_code 106
+  isr_wrapper_entry_point_no_code 107
+  isr_wrapper_entry_point_no_code 108
+  isr_wrapper_entry_point_no_code 109
+  isr_wrapper_entry_point_no_code 110
+  isr_wrapper_entry_point_no_code 111
+  isr_wrapper_entry_point_no_code 112
+  isr_wrapper_entry_point_no_code 113
+  isr_wrapper_entry_point_no_code 114
+  isr_wrapper_entry_point_no_code 115
+  isr_wrapper_entry_point_no_code 116
+  isr_wrapper_entry_point_no_code 117
+  isr_wrapper_entry_point_no_code 118
+  isr_wrapper_entry_point_no_code 119
+  isr_wrapper_entry_point_no_code 120
+  isr_wrapper_entry_point_no_code 121
+  isr_wrapper_entry_point_no_code 122
+  isr_wrapper_entry_point_no_code 123
+  isr_wrapper_entry_point_no_code 124
+  isr_wrapper_entry_point_no_code 125
+  isr_wrapper_entry_point_no_code 126
+  isr_wrapper_entry_point_no_code 127
+  isr_wrapper_entry_point_no_code 128
+  isr_wrapper_entry_point_no_code 129
+  isr_wrapper_entry_point_no_code 130
+  isr_wrapper_entry_point_no_code 131
+  isr_wrapper_entry_point_no_code 132
+  isr_wrapper_entry_point_no_code 133
+  isr_wrapper_entry_point_no_code 134
+  isr_wrapper_entry_point_no_code 135
+  isr_wrapper_entry_point_no_code 136
+  isr_wrapper_entry_point_no_code 137
+  isr_wrapper_entry_point_no_code 138
+  isr_wrapper_entry_point_no_code 139
+  isr_wrapper_entry_point_no_code 140
+  isr_wrapper_entry_point_no_code 141
+  isr_wrapper_entry_point_no_code 142
+  isr_wrapper_entry_point_no_code 143
+  isr_wrapper_entry_point_no_code 144
+  isr_wrapper_entry_point_no_code 145
+  isr_wrapper_entry_point_no_code 146
+  isr_wrapper_entry_point_no_code 147
+  isr_wrapper_entry_point_no_code 148
+  isr_wrapper_entry_point_no_code 149
+  isr_wrapper_entry_point_no_code 150
+  isr_wrapper_entry_point_no_code 151
+  isr_wrapper_entry_point_no_code 152
+  isr_wrapper_entry_point_no_code 153
+  isr_wrapper_entry_point_no_code 154
+  isr_wrapper_entry_point_no_code 155
+  isr_wrapper_entry_point_no_code 156
+  isr_wrapper_entry_point_no_code 157
+  isr_wrapper_entry_point_no_code 158
+  isr_wrapper_entry_point_no_code 159
+  isr_wrapper_entry_point_no_code 160
+  isr_wrapper_entry_point_no_code 161
+  isr_wrapper_entry_point_no_code 162
+  isr_wrapper_entry_point_no_code 163
+  isr_wrapper_entry_point_no_code 164
+  isr_wrapper_entry_point_no_code 165
+  isr_wrapper_entry_point_no_code 166
+  isr_wrapper_entry_point_no_code 167
+  isr_wrapper_entry_point_no_code 168
+  isr_wrapper_entry_point_no_code 169
+  isr_wrapper_entry_point_no_code 170
+  isr_wrapper_entry_point_no_code 171
+  isr_wrapper_entry_point_no_code 172
+  isr_wrapper_entry_point_no_code 173
+  isr_wrapper_entry_point_no_code 174
+  isr_wrapper_entry_point_no_code 175
+  isr_wrapper_entry_point_no_code 176
+  isr_wrapper_entry_point_no_code 177
+  isr_wrapper_entry_point_no_code 178
+  isr_wrapper_entry_point_no_code 179
+  isr_wrapper_entry_point_no_code 180
+  isr_wrapper_entry_point_no_code 181
+  isr_wrapper_entry_point_no_code 182
+  isr_wrapper_entry_point_no_code 183
+  isr_wrapper_entry_point_no_code 184
+  isr_wrapper_entry_point_no_code 185
+  isr_wrapper_entry_point_no_code 186
+  isr_wrapper_entry_point_no_code 187
+  isr_wrapper_entry_point_no_code 188
+  isr_wrapper_entry_point_no_code 189
+  isr_wrapper_entry_point_no_code 190
+  isr_wrapper_entry_point_no_code 191
+  isr_wrapper_entry_point_no_code 192
+  isr_wrapper_entry_point_no_code 193
+  isr_wrapper_entry_point_no_code 194
+  isr_wrapper_entry_point_no_code 195
+  isr_wrapper_entry_point_no_code 196
+  isr_wrapper_entry_point_no_code 197
+  isr_wrapper_entry_point_no_code 198
+  isr_wrapper_entry_point_no_code 199
+  isr_wrapper_entry_point_no_code 200
+  isr_wrapper_entry_point_no_code 201
+  isr_wrapper_entry_point_no_code 202
+  isr_wrapper_entry_point_no_code 203
+  isr_wrapper_entry_point_no_code 204
+  isr_wrapper_entry_point_no_code 205
+  isr_wrapper_entry_point_no_code 206
+  isr_wrapper_entry_point_no_code 207
+  isr_wrapper_entry_point_no_code 208
+  isr_wrapper_entry_point_no_code 209
+  isr_wrapper_entry_point_no_code 210
+  isr_wrapper_entry_point_no_code 211
+  isr_wrapper_entry_point_no_code 212
+  isr_wrapper_entry_point_no_code 213
+  isr_wrapper_entry_point_no_code 214
+  isr_wrapper_entry_point_no_code 215
+  isr_wrapper_entry_point_no_code 216
+  isr_wrapper_entry_point_no_code 217
+  isr_wrapper_entry_point_no_code 218
+  isr_wrapper_entry_point_no_code 219
+  isr_wrapper_entry_point_no_code 220
+  isr_wrapper_entry_point_no_code 221
+  isr_wrapper_entry_point_no_code 222
+  isr_wrapper_entry_point_no_code 223
+  isr_wrapper_entry_point_no_code 224
+  isr_wrapper_entry_point_no_code 225
+  isr_wrapper_entry_point_no_code 226
+  isr_wrapper_entry_point_no_code 227
+  isr_wrapper_entry_point_no_code 228
+  isr_wrapper_entry_point_no_code 229
+  isr_wrapper_entry_point_no_code 230
+  isr_wrapper_entry_point_no_code 231
+  isr_wrapper_entry_point_no_code 232
+  isr_wrapper_entry_point_no_code 233
+  isr_wrapper_entry_point_no_code 234
+  isr_wrapper_entry_point_no_code 235
+  isr_wrapper_entry_point_no_code 236
+  isr_wrapper_entry_point_no_code 237
+  isr_wrapper_entry_point_no_code 238
+  isr_wrapper_entry_point_no_code 239
+  isr_wrapper_entry_point_no_code 240
+  isr_wrapper_entry_point_no_code 241
+  isr_wrapper_entry_point_no_code 242
+  isr_wrapper_entry_point_no_code 243
+  isr_wrapper_entry_point_no_code 244
+  isr_wrapper_entry_point_no_code 245
+  isr_wrapper_entry_point_no_code 246
+  isr_wrapper_entry_point_no_code 247
+  isr_wrapper_entry_point_no_code 248
+  isr_wrapper_entry_point_no_code 249
+  isr_wrapper_entry_point_no_code 250
+  isr_wrapper_entry_point_no_code 251
+  isr_wrapper_entry_point_no_code 252
+  isr_wrapper_entry_point_no_code 253
+  isr_wrapper_entry_point_no_code 254
+  isr_wrapper_entry_point_no_code 255

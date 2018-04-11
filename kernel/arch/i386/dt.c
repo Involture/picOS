@@ -2,11 +2,24 @@
 #include <stdint.h>
 #include <stddef.h>
 #include <stdio.h>
+#include <kernel/interrupt_as.h>
+#include <kernel/dtconf.h>
 
 #include <kernel/dt.h>
 
 static uint64_t picOS_gdt[GDT_SIZE] = {0};
 static uint64_t picOS_idt[IDT_SIZE] = {0};
+
+static void dt_configure_idt(void) {
+  for (size_t i = 0; i < IDT_SIZE; i++) {
+    idt_conf[i].selector = 0x0008;
+    idt_conf[i].offset = (uint32_t) &isr_wrapper + 
+                         INTERRUPT_AS_ENTRY_POINT_OFS * i;
+    idt_conf[i].type = IDT_GATE_TYPE_INTERRUPT;
+    idt_conf[i].dpl = 0;
+    idt_conf[i].prs = true;
+  };
+}
 
 /* To understand the following, please refer to GDT entry layout.
 It consists of distributing the bits of the previous structure over 8 bytes
@@ -58,7 +71,7 @@ static uint64_t make_idt_entry(struct idt_entry source) {
   result |= offset64                & 0x000000000000FFFF;
   result |= (selector64  << 16)     & 0x00000000FFFF0000;
   result |= (type_attr64 << 40)     & 0x0000FF0000000000;
-  result |= (offset64    << 32)     & 0xFF00000000000000;
+  result |= (offset64    << 32)     & 0xFFFF000000000000;
 
   return result;
 }
@@ -85,7 +98,7 @@ void dt_print_gdt(void) {
 
 void dt_print_idt(void) {
   puts("Printing generated idt :");
-  print_dt(picOS_idt, 5);
+  print_dt(picOS_idt, 10);
 }
 
 void dt_init_gdt(void) {
@@ -94,6 +107,6 @@ void dt_init_gdt(void) {
 };
 
 void dt_init_idt(void) {
-  make_idt(picOS_idt, idt_conf, GDT_SIZE);
-  dt_set_gdt(picOS_idt, sizeof(picOS_idt));
+  make_idt(picOS_idt, idt_conf, IDT_SIZE);
+  dt_set_idt(picOS_idt, sizeof(picOS_idt));
 };
