@@ -25,9 +25,14 @@ void kernel_init(void) {
   cpuid_set();
   printf("After setting cpuid : %w\n", cpuid, 4);
 
+  uint32_t stack_dump[12];
+  dump_as_stack(stack_dump, 12);
+  dump_print_stack(stack_dump, 12);
+  printf("Stack_dump_continue : %w", stack_dump, 50);
+
+  while(1);
   interrupt_as_raise();
   puts("Interrupt test passed \\o/");
-  while(1);
 
   if (cpuid_has_feat(CPUID_FEAT_EDX_APIC))
     pic_disable_apic();

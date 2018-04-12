@@ -86,7 +86,7 @@ int printf(const char* restrict format, ...) {
         return -1;
       }
       char dest[2];
-      for (size_t i = size - 1; i < size;  i--) {
+      for (size_t i = 0; i < size;  i++) {
         hex_cvrt(dest, bytes + i, sizeof(char));
         print(dest, sizeof(dest));
       }

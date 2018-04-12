@@ -24,3 +24,10 @@ void dump_print_interrupt (struct dump_as_interrupt_dump* dump) {
          &(dump->cs), 4,
          &(dump->eflags), 4);
 }
+
+void dump_print_stack (uint32_t* stack_dump, size_t size) {
+  puts("Printing stack dump");
+  for (size_t i = 0; i < size; i ++) {
+    printf("Stack %x : %w\n", i, stack_dump + i, 4);
+  }
+}

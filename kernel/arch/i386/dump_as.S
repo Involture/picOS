@@ -1,5 +1,11 @@
 .att_syntax noprefix
 
+.section .data
+to_print :
+  .double 0
+format :
+  .ascii "eax : %w  \n"
+
 .section .text
 .global dump_as_reg
 .global dump_as_seg
@@ -43,6 +49,19 @@ dump_as_stack :
   mov 8(esp), ecx
   mov $16, edx
 while_begin :
+
+# Print for debugging
+  push $4
+  push $to_print
+  push $format
+  mov eax, to_print
+  call printf
+  mov ecx, to_print
+  call printf
+  mov edx, to_print
+  call printf
+  add $12, esp
+
   mov (esp, edx), edi
   mov edi, (ecx)
   add $4, ecx
