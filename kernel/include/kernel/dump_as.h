@@ -2,6 +2,7 @@
 #define _KERNEL_DUMP_AS_H
 
 #include <stdint.h>
+#include <stddef.h>
 
 struct dump_as_interrupt_dump {
   uint32_t error_code;
@@ -32,5 +33,6 @@ struct dump_as_seg_dump {
 
 extern void dump_as_reg(struct dump_as_reg_dump*);
 extern void dump_as_seg(struct dump_as_seg_dump*);
+extern void dump_as_stack(uint32_t*, size_t);
 
 #endif

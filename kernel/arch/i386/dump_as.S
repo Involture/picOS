@@ -3,8 +3,10 @@
 .section .text
 .global dump_as_reg
 .global dump_as_seg
+.global dump_as_stack
 .type dump_as_reg, @function
 .type dump_as_seg, @function
+.type dump_as_stack, @function
 
 # void dump_as_reg(struct dump_as_reg_dump*)
   push edx
@@ -32,4 +34,22 @@ dump_as_seg :
   mov fs, 12(eax)
   mov gs, 16(eax)
   mov ss, 20(eax)
+  ret
+
+# void dump_as_stack(uint32_t* ptr, size_t size)
+dump_as_stack :
+  push edi
+  mov 12(esp), eax
+  mov 8(esp), ecx
+  mov $16, edx
+while_begin :
+  mov (esp, edx), edi
+  mov edi, (ecx)
+  add $4, ecx
+  add $4, edx
+  sub $1, eax
+  jz while_end
+  jmp while_begin
+while_end :
+  pop edi
   ret

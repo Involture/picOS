@@ -8,8 +8,4 @@
 extern void interrupt_as_isr_wrapper(void);
 extern void interrupt_as_raise(void);
 
-extern uint32_t debug1;
-extern uint32_t debug2;
-extern uint32_t debug3;
-
 #endif

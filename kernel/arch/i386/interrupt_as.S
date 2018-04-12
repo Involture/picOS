@@ -1,10 +1,12 @@
 .att_syntax noprefix
 
-.section .text
+.section .data
+to_print :
+  .double 0x0     # uint32_t to print
+format :
+  .ascii "Address of interrupt_master_isr : %w\n  "
 
-.global debug1
-.global debug2
-.global debug3
+.section .text
 
 .global interrup_master_isr
 .global interrupt_as_isr_wrapper
@@ -14,7 +16,7 @@
 
 #void interrupt_as_raise(void)
 interrupt_as_raise :
-  int $126
+  int $2
   ret
 
 #void interrupt_as_isr_wrapper(void)
@@ -27,6 +29,8 @@ interrupt_as_raise :
   jmp real_isr_wrapper    
 .endm
 .macro isr_wrapper_entry_point i
+  nop                         # Align instruction on 6 bytes
+  nop
   push $\i                    # Push the interrupt number
   jmp real_isr_wrapper
 .endm
@@ -34,7 +38,17 @@ interrupt_as_raise :
 real_isr_wrapper :
   pushal                      # Register dump
   cld                         # C convention imposes direction flag cleared
-  call *interrupt_master_isr  # Calling :)
+
+  # Printing call address for debugging :)
+  movl $interrupt_master_isr, to_print
+  push $4
+  push $to_print
+  push $format
+  cld
+  call printf
+  add $12, esp
+
+  call interrupt_master_isr  # Calling :)
   popal                       # Poping registers
   add 8, esp                  # Discard interrupt number and interrupt code
   iret
@@ -48,11 +62,8 @@ interrupt_as_isr_wrapper :
   isr_wrapper_entry_point_no_code 5
   isr_wrapper_entry_point_no_code 6
   isr_wrapper_entry_point_no_code 7
-debug1:
   isr_wrapper_entry_point 8
-debug2:
   isr_wrapper_entry_point_no_code 9
-debug3:
   isr_wrapper_entry_point 10
   isr_wrapper_entry_point 11
   isr_wrapper_entry_point 12
