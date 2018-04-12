@@ -1,0 +1,7 @@
+cross_compiler/
+path
+libc_not_used_for_now
+flash.sh
+isodir
+sysroot
+picOS.iso
