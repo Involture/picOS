@@ -2,11 +2,13 @@
 #include <stdint.h>
 #include <kernel/tty_ext.h>
 #include <kernel/dt.h>
+#include <kernel/dt_as.h>
 #include <kernel/cpuid.h>
 #include <kernel/pic.h>
 #include <kernel/port.h>
 #include <kernel/ps2_ctrl.h>
 #include <kernel/interrupt.h>
+#include <kernel/interrupt_as.h>
 #include <kernel/dump.h>
 
 void kernel_init(void) {
@@ -14,7 +16,7 @@ void kernel_init(void) {
 
   dt_init_gdt();
   dt_print_gdt();
-  dt_reload_cs();
+  dt_as_reload_cs();
 
   dt_configure_idt();
   dt_init_idt();
@@ -23,7 +25,7 @@ void kernel_init(void) {
   cpuid_set();
   printf("After setting cpuid : %w\n", cpuid, 4);
 
-  dt_raise();
+  interrupt_as_raise();
   puts("Interrupt test passed \\o/");
   while(1);
 
@@ -36,6 +38,5 @@ void kernel_init(void) {
 
 void kernel_main(void) {
   kernel_init();
-  scan_code_detection();
   while(1);
 }

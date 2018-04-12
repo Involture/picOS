@@ -16,7 +16,7 @@ void dump_print_seg (struct dump_as_seg_dump* dump) {
          dump->cs, dump->ds, dump->es, dump->fs, dump->gs, dump->ss);
 }
 
-void dump_print_interrup (struct dump_as_interrupt_dump* dump) {
+void dump_print_interrupt (struct dump_as_interrupt_dump* dump) {
   printf("errcode : %w | eip : %w\n", &(dump->error_code), &(dump->eip)); 
-  printf("%w cs : %w | eflags : %w\n", &(dump->cs), &(dump->eflags);
+  printf("%w cs : %w | eflags : %w\n", &(dump->cs), &(dump->eflags));
 }

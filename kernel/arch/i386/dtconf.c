@@ -1,7 +1,8 @@
-#include <kernel/dt.h>
-#include <kernel/int.h>
 #include <stdbool.h>
 #include <stdio.h>
+#include <kernel/dt.h>
+
+#include <kernel/dtconf.h>
 
 #define INSTR_SIZE 10
 

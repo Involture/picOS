@@ -2,18 +2,19 @@
 #include <stdint.h>
 #include <stddef.h>
 #include <stdio.h>
-#include <kernel/interrupt_as.h>
 #include <kernel/dtconf.h>
+#include <kernel/interrupt_as.h>
+#include <kernel/dt_as.h>
 
 #include <kernel/dt.h>
 
 static uint64_t picOS_gdt[GDT_SIZE] = {0};
 static uint64_t picOS_idt[IDT_SIZE] = {0};
 
-static void dt_configure_idt(void) {
+void dt_configure_idt(void) {
   for (size_t i = 0; i < IDT_SIZE; i++) {
     idt_conf[i].selector = 0x0008;
-    idt_conf[i].offset = (uint32_t) &isr_wrapper + 
+    idt_conf[i].offset = (uint32_t) &interrupt_as_isr_wrapper + 
                          INTERRUPT_AS_ENTRY_POINT_OFS * i;
     idt_conf[i].type = IDT_GATE_TYPE_INTERRUPT;
     idt_conf[i].dpl = 0;
@@ -103,10 +104,16 @@ void dt_print_idt(void) {
 
 void dt_init_gdt(void) {
   make_gdt(picOS_gdt, gdt_conf, GDT_SIZE);
-  dt_set_gdt(picOS_gdt, sizeof(picOS_gdt));
+  struct dt_ptr ptr = {.limit = sizeof(picOS_gdt), 
+                       .base = (uint32_t) picOS_gdt
+                      };
+  dt_as_set_gdt(ptr);
 };
 
 void dt_init_idt(void) {
   make_idt(picOS_idt, idt_conf, IDT_SIZE);
-  dt_set_idt(picOS_idt, sizeof(picOS_idt));
+  struct dt_ptr ptr = {.limit = sizeof(picOS_idt), 
+                       .base = (uint32_t) picOS_idt
+                      };
+  dt_as_set_idt(ptr);
 };

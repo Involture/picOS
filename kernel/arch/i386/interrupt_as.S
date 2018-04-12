@@ -36,8 +36,7 @@ real_isr_wrapper :
   cld                         # C convention imposes direction flag cleared
   call *interrupt_master_isr  # Calling :)
   popal                       # Poping registers
-  pop                         # Discard interrupt number
-  pop                         # Discard interrupt code
+  add 8, esp                  # Discard interrupt number and interrupt code
   iret
 
 interrupt_as_isr_wrapper :
@@ -53,7 +52,7 @@ debug1:
   isr_wrapper_entry_point 8
 debug2:
   isr_wrapper_entry_point_no_code 9
-debug3
+debug3:
   isr_wrapper_entry_point 10
   isr_wrapper_entry_point 11
   isr_wrapper_entry_point 12

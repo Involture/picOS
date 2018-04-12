@@ -4,7 +4,7 @@
 struct dt_ptr {
   uint16_t limit;
   uint32_t base;
-} __attribut__((packed));
+} __attribute__((packed));
 
 extern void dt_as_set_gdt(struct dt_ptr);
 extern void dt_as_set_idt(struct dt_ptr);
