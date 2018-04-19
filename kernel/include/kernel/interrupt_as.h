@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-#define INTERRUPT_AS_ENTRY_POINT_OFS 14
+#define INTERRUPT_AS_ENTRY_POINT_OFS 6
 
 extern void interrupt_as_isr_wrapper(void);
 extern void interrupt_as_raise(void);

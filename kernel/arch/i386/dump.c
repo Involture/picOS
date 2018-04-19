@@ -20,7 +20,7 @@ void dump_print_interrupt (struct dump_as_interrupt_dump* dump) {
   printf("errcode : %w | eip : %w\n", 
          &(dump->error_code), 4,
          &(dump->eip), 4); 
-  printf("%w cs : %w | eflags : %w\n", 
+  printf("cs : %w | eflags : %w\n", 
          &(dump->cs), 4,
          &(dump->eflags), 4);
 }

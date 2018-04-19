@@ -48,7 +48,7 @@ $(LIBS) \
 $(ARCHDIR)/crtend.o \
 $(ARCHDIR)/crtn.o \
 
-.PHONY: all clean install install-headers install-kernel
+.PHONY: all clean install install-headers install-kernel install-debug
 .SUFFIXES: .o .c .S
 
 all: picOS.kernel
@@ -68,10 +68,11 @@ $(ARCHDIR)/crtbegin.o $(ARCHDIR)/crtend.o:
 
 clean:
 	rm -f picOS.kernel
+	rm -f picOS.sym
 	rm -f $(OBJS) *.o */*.o */*/*.o
 	rm -f $(OBJS:.o=.d) *.d */*.d */*/*.d
 
-install: install-headers install-kernel
+install: install-headers install-kernel install-debug
 
 install-headers:
 	mkdir -p $(DESTDIR)$(INCLUDEDIR)
@@ -80,5 +81,9 @@ install-headers:
 install-kernel: picOS.kernel
 	mkdir -p $(DESTDIR)$(BOOTDIR)
 	cp picOS.kernel $(DESTDIR)$(BOOTDIR)
+
+install-debug: picOS.kernel
+	objcopy --only-keep-debug picOS.kernel picOS.sym
+	mv picOS.sym $(MAIN_ROOT)/picOS.sym
 
 -include $(OBJS:.o=.d)

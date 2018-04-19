@@ -16,7 +16,7 @@ format :
 
 #void interrupt_as_raise(void)
 interrupt_as_raise :
-  int $2
+  int $1
   ret
 
 #void interrupt_as_isr_wrapper(void)
@@ -24,31 +24,21 @@ interrupt_as_raise :
 # These macro are used to properly set the interrupt code and number,
 # see below
 .macro isr_wrapper_entry_point_no_code i
-  push $0                     # Push 0 as an error code
-  push $\i                    # Push the interrupt number
+  pushl $0                     # Push 0 as an error code
+  pushl $\i                    # Push the interrupt number
   jmp real_isr_wrapper    
 .endm
 .macro isr_wrapper_entry_point i
-  nop                         # Align instruction on 6 bytes
+  nop                          # Align instruction on 6 bytes
   nop
-  push $\i                    # Push the interrupt number
+  pushl $\i                    # Push the interrupt number
   jmp real_isr_wrapper
 .endm
 
 real_isr_wrapper :
   pushal                      # Register dump
   cld                         # C convention imposes direction flag cleared
-
-  # Printing call address for debugging :)
-  movl $interrupt_master_isr, to_print
-  push $4
-  push $to_print
-  push $format
-  cld
-  call printf
-  add $12, esp
-
-  call interrupt_master_isr  # Calling :)
+  call interrupt_master_isr   # Calling :)
   popal                       # Poping registers
   add 8, esp                  # Discard interrupt number and interrupt code
   iret

@@ -1,6 +1,7 @@
 SYSTEM_HEADER_PROJECTS="libc kernel"
 PROJECTS="libc kernel"
 
+export MAIN_ROOT=`pwd`
 export MAKE=${MAKE:-make}
 export HOST=${HOST:-$(./default-host.sh)}
 if [ -f path ] ; then
@@ -22,7 +23,10 @@ export BOOTDIR=/boot
 export LIBDIR=$EXEC_PREFIX/lib
 export INCLUDEDIR=$PREFIX/include
 
-export CFLAGS='-O2 -g -Werror'
+export CFLAGS='-O2 -Werror'
+if $debug 
+  then export CFLAGS="$CFLAGS -g"
+fi
 export CPPFLAGS=''
 
 # Configure the cross-compiler to use the desired system root.
