@@ -39,7 +39,6 @@ struct idt_entry {
   bool prs;                 // Disable if interrupt not used
 };
 
-void dt_configure_idt(void);
 void dt_init_gdt(void);
 void dt_init_idt(void);
 void dt_print_gdt(void);

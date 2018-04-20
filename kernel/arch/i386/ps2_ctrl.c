@@ -7,17 +7,16 @@ static void perror(void) {
   printf("PS/2 controller init error : ");
 };
 
-#define TIMEOUT 10000
 static int timer;
+static bool time_left;
 
-static bool wait(void) {
+static void wait(void) {
   timer++;
-  if (timer == TIMEOUT) {
+  if (timer == ps2_ctrl_timeout) {
     perror();
     puts("Timeout");
-    return false;
+    time_left = false;
   };
-  return true;
 };
 
 static void outb_data(char byte) {
@@ -38,43 +37,37 @@ static char get_status(void) {
 
 static void outb_block_cmd(char byte) {
   timer = 0;
-  while (get_status() & PS2_CTRL_INPUT_BUF)
+  time_left = true;
+  while ((get_status() & PS2_CTRL_INPUT_BUF) && time_left)
     wait();
   outb_cmd(byte);
 };
 
 static void outb_block_data(char byte) {
   timer = 0;
-  while (get_status() & PS2_CTRL_INPUT_BUF)
+  time_left = true;
+  while ((get_status() & PS2_CTRL_INPUT_BUF) && time_left)
     wait();
   outb_data(byte);
 };
 
 static char inb_block_data(void) {
-  while (! (get_status() & PS2_CTRL_OUTPUT_BUF))
+  timer = 0;
+  time_left = true;
+  while ((! (get_status() & PS2_CTRL_OUTPUT_BUF)) && time_left) {
     wait();
+  }
   return inb_data();
 }
 
-
-int ps2_ctrl_init(void) {
+void ps2_ctrl_init(void) {
+  ps2_ctrl_timeout = 100000;
   puts("Disabling ports");
-  outb_cmd(PS2_CTRL_CMD_DSBL_P1); // Dsbl ports so they dont interfere
-  outb_cmd(PS2_CTRL_CMD_DSBL_P2); // with initialization
+  outb_block_cmd(PS2_CTRL_CMD_DSBL_P1); // Dsbl ports so they dont interfere
+  outb_block_cmd(PS2_CTRL_CMD_DSBL_P2); // with initialization
 
-  timer = 0;                            // Flush the output buffer
-  while ((get_status() & PS2_CTRL_INPUT_BUF) | (timer < TIMEOUT)) {
-    timer++;
-    printf("time : %x |", timer);
-    printf("data_received : %x\n",inb_data());                           
-  };
-  printf("Ps2 statut after flush : %x\n", get_status());
-  printf("Timer after flush : %x\n", timer);
-
-  // Checking if the port are well disabled
-  inb_block_data();                     // Should block whatever the inputs
-  perror();                             // on keyboards
-  puts("Ports were not disabled correctly !!!");
+  inb_data();                           // Flush the output buffer
+  printf("Output buffer status : %x\n", get_status() & PS2_CTRL_OUTPUT_BUF);
 
   puts("Disabling interrupts");
   outb_block_cmd(PS2_CTRL_CMD_GET_CONF);// Get the configuration
@@ -130,8 +123,6 @@ int ps2_ctrl_init(void) {
   conf |= !PS2_CTRL_CONF_TRSL;
   outb_block_cmd(PS2_CTRL_CMD_WRITE_CONF);
   outb_block_data(conf);
-
-  return 0;
 };
 
 void ps2_ctrl_outb1(char byte) {
@@ -145,5 +136,5 @@ void ps2_ctrl_outb2(char byte) {
 };
 
 char ps2_ctrl_inb(void) {
-  return inb_data();
+  return inb_block_data();
 };

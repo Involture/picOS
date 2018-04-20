@@ -1,3 +1,8 @@
+#ifndef _KERNEL_PIC_H
+#define _KERNEL_PIC_H
+
+#include <stdint.h>
+
 #define PIC1          0x20        // IO base address for master PIC
 #define PIC2          0xA0        // IO base address for slave PIC
 #define PIC1_COMMAND  PIC1
@@ -20,5 +25,6 @@
 #define ICW4_SFNM         0x10    // Special fully nested (not)
 
 void pic_sendEOI(unsigned char);
-void pic_remap(int, int);
-extern void pic_disable_apic(void);
+void pic_remap(uint32_t, uint32_t, uint16_t);
+
+#endif

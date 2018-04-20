@@ -10,8 +10,8 @@
 outb:
   xor eax, eax
   xor edx, edx
-  mov 4(esp), al
-  mov 8(esp), dl
+  mov 4(esp), dl
+  mov 8(esp), al
   out al, dx
   ret
 

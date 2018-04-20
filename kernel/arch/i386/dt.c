@@ -11,17 +11,6 @@
 static uint64_t picOS_gdt[GDT_SIZE] = {0};
 static uint64_t picOS_idt[IDT_SIZE] = {0};
 
-void dt_configure_idt(void) {
-  for (size_t i = 0; i < IDT_SIZE; i++) {
-    idt_conf[i].selector = 0x0008;
-    idt_conf[i].offset = (uint32_t) &interrupt_as_isr_wrapper + 
-                         INTERRUPT_AS_ENTRY_POINT_OFS * i;
-    idt_conf[i].type = IDT_GATE_TYPE_INTERRUPT;
-    idt_conf[i].dpl = 0;
-    idt_conf[i].prs = true;
-  };
-}
-
 /* To understand the following, please refer to GDT entry layout.
 It consists of distributing the bits of the previous structure over 8 bytes
 in a complex way for compatibility with i286 processors */

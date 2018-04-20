@@ -15,28 +15,27 @@ void kernel_init(void) {
 	tty_ext_initialize();
 
   dt_init_gdt();
-  dt_print_gdt();
+  //dt_print_gdt();
   dt_as_reload_cs();
 
-  dt_configure_idt();
   dt_init_idt();
-  dt_print_idt();
+  //dt_print_idt();
 
   cpuid_set();
-  printf("After setting cpuid : %w\n", cpuid, 4);
+  //printf("cpuid : %w\n", cpuid, 4);
 
-  interrupt_as_raise();
-  puts("Interrupt test passed \\o/");
-  while(1);
+  pic_remap(32, 40, 0xFFFD);
+  interrupt_as_enable();
 
-  if (cpuid_has_feat(CPUID_FEAT_EDX_APIC))
-    pic_disable_apic();
-  pic_remap(32, 40);
-
-  //ps2_ctrl_init(); Will be verified later
+  ps2_ctrl_init();
 }
 
 void kernel_main(void) {
   kernel_init();
+  puts("Init sequence ended");
   while(1);
+  ps2_ctrl_timeout = -1;
+  while (1) {
+    printf("Data : %x\n", ps2_ctrl_inb());
+  }
 }
