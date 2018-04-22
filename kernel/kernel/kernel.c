@@ -22,7 +22,7 @@ void kernel_init(void) {
   //dt_print_idt();
 
   cpuid_set();
-  //printf("cpuid : %w\n", cpuid, 4);
+  printf("cpuid : %w\n", cpuid, 4);
 
   pic_remap(32, 40, 0xFFFD);
   interrupt_as_enable();

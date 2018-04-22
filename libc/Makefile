@@ -1,6 +1,6 @@
-DEFAULT_HOST!=../default-host.sh
+DEFAULT_HOST!=../scripts/default-host.sh
 HOST?=DEFAULT_HOST
-HOSTARCH!=../target-triplet-to-arch.sh $(HOST)
+HOSTARCH!=../scripts/target-triplet-to-arch.sh $(HOST)
 
 CFLAGS?=-O2 -g
 CPPFLAGS?=
@@ -37,6 +37,14 @@ string/memcpy.o \
 string/memmove.o \
 string/memset.o \
 string/strlen.o \
+cycle_array/ca_mk.o \
+cycle_array/ca_append.o \
+cycle_array/ca_change.o \
+cycle_array/ca_get.o \
+fifo/fifo_mk.o \
+fifo/fifo_enqueue.o \
+fifo/fifo_dequeue.o \
+fifo/fifo_is_empty.o \
 
 HOSTEDOBJS=\
 $(ARCH_HOSTEDOBJS) \

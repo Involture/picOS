@@ -3,12 +3,13 @@ PROJECTS="libc kernel"
 
 export MAIN_ROOT=`pwd`
 export MAKE=${MAKE:-make}
-export HOST=${HOST:-$(./default-host.sh)}
-if [ -f path ] ; then
-  export PATH=$(cat path):$PATH
+export HOST=${HOST:-$(./scripts/default-host.sh)}
+if [ -f scripts/path ] ; then
+  export PATH=$(cat scripts/path):$PATH
 else
-  echo "error : path file not found"
-  echo "please add a file path with the path to your cross compilers"
+  echo "Error : path file not found"
+  echo "Please add a file path with the path to your cross compilers"
+  echo "in the scripts folder."
   exit 1
 fi
 echo $PATH
@@ -23,9 +24,12 @@ export BOOTDIR=/boot
 export LIBDIR=$EXEC_PREFIX/lib
 export INCLUDEDIR=$PREFIX/include
 
-export CFLAGS='-O2 -Werror'
-if $debug 
+export CFLAGS='-O2'
+if [ $debug ]
   then export CFLAGS="$CFLAGS -g"
+fi
+if [ $warns_as_errors ]
+  then export CFLAGS="$CFLAGS -Werror"
 fi
 export CPPFLAGS=''
 
