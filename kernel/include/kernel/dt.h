@@ -8,6 +8,8 @@
 #define GDT_SIZE 3
 #define IDT_SIZE 256
 
+// An entry for the gdt. Bits need to be reordered to produce an entry readable
+// by the preocessor.
 struct gdt_entry {
   uint32_t base;  // Base address for the segment
   uint32_t limit; // Limit of the segment
@@ -31,6 +33,7 @@ enum idt_gate_type {
   IDT_GATE_TYPE_TRAP      = 0xF,
 };
 
+// Same thing for idt.
 struct idt_entry {
   uint16_t selector;        // Segment selector containing the I handler code
   uint32_t offset;          // Offset of the ISR in the segment
@@ -39,8 +42,11 @@ struct idt_entry {
   bool prs;                 // Disable if interrupt not used
 };
 
+// Reorder bits of the tables to produce the final ones, and load them in the
+// processor.
 void dt_init_gdt(void);
 void dt_init_idt(void);
+// Print the tables as they are loaded in the processor.
 void dt_print_gdt(void);
 void dt_print_idt(void);
 

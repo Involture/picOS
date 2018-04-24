@@ -3,13 +3,19 @@
 
 #include <stdint.h>
 
-#define INTERRUPT_AS_ENTRY_POINT_OFS 6
-#define INTERRUPT_AS_ENTRY_POINT_OFS_19 3
-
+// Enable or disable interrupts
 extern void interrupt_as_enable(void);
 extern void interrupt_as_disable(void);
+// Test interrupt, to change the interrupt number : edit code
 extern void interrupt_as_test(void);
 
+/* These function are destined to be the interrupt handlers. All of them push
+   the interrupt number they represent on the stack. They also push an error
+   code equal to zero if the cpu has not done it, to complete the interrupt
+   information structure.
+   Then they call a shared piece of code. The later push the registers and
+   call the master interrupt handler, written in C.
+ */
 extern void interrupt_as_isr_wrapper_entry_point_0(void);
 extern void interrupt_as_isr_wrapper_entry_point_1(void);
 extern void interrupt_as_isr_wrapper_entry_point_2(void);

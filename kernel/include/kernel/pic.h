@@ -24,7 +24,11 @@
 #define ICW4_BUF_MASTER   0x0C    // Buffered mode/master
 #define ICW4_SFNM         0x10    // Special fully nested (not)
 
+/* Tell the PIC that the last interrupt was handled correcly. Cause the PIC to
+   raise the next interrupt queued.
+ */
 void pic_sendEOI(unsigned char);
+// Resest the pic and change its settings
 void pic_remap(uint32_t, uint32_t, uint16_t);
 
 #endif

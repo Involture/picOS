@@ -4,6 +4,9 @@
 #include <stdint.h>
 #include <stddef.h>
 
+// These structures are the result of various dumping functions used for
+// debugging.
+
 struct dump_as_interrupt_dump {
   uint32_t error_code;
   uint32_t eip;
@@ -31,6 +34,7 @@ struct dump_as_seg_dump {
   uint8_t ss;
 } __attribute__((packed));
 
+// Function to produce the dumps. Unstable
 extern void dump_as_reg(struct dump_as_reg_dump*);
 extern void dump_as_seg(struct dump_as_seg_dump*);
 extern void dump_as_stack(uint32_t*, size_t);

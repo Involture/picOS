@@ -4,6 +4,7 @@
 
 #include <kernel/dump_as.h>
 
+// Produce the dumps, store them and print them.
 void dump_print_reg (struct dump_as_reg_dump*);
 void dump_print_seg (struct dump_as_seg_dump*);
 void dump_print_interrupt (struct dump_as_interrupt_dump*);

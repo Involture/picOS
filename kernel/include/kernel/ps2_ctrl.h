@@ -40,10 +40,15 @@
 #define PS2_CTRL_COT_CLK1       (1 << 6) // First port clock
 #define PS2_CTRL_COT_DATA1      (1 << 7) // First port data
 
+// The timeout for commands send to the ps2_ctrl
 int ps2_ctrl_timeout;
+// Output byte to the first ps2 device
 void ps2_ctrl_outb1(char);
+// Output byte to the second ps2 device
 void ps2_ctrl_outb2(char);
+// Initialize the ps2_ctrl
 void ps2_ctrl_init(void); 
+// Read byte from the ps2_ctrl
 char ps2_ctrl_inb(void);
 
 #endif
