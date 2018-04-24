@@ -1,13 +1,11 @@
-#ifndef _KERNEL_PROC_H
-#define _KERNEL_PROC_H
+#ifndef _PROC_H
+#define _PROC_H
 
 #include <stdint.h>
 #include <stddef.h>
 #include <stdbool.h>
 #include <prio_queue.h>
-#include <var_array.h>
-
-#include <kernel/scheduler/proc.h>
+#include <hash_table.h>
 
 // *** TYPE DEFINITIONS ***
 
@@ -22,11 +20,11 @@ typedef struct {
   id : pid_t;
   code : path_t;
   parent : pid_t;
-  children : var_array_t;   // An array containing pointers to the processus
+  children : hashtbl_t;     // An table containing pointers to the processus
                             //   descriptor of the children.
-  pending : prio_queue_t;   // A queue of pointers to task descriptor to be 
+  pending : pq_t;           // A queue of pointers to task descriptor to be 
                             //   served.
-  delegated : var_array_t;  // An array of pointers to delegated task 
+  delegated : hashtbl_t;    // An table of pointers to delegated task 
                             //   descriptors.
 } proc_t;
 
@@ -92,6 +90,9 @@ void proc_suicide(void);
    Any omitted processus has no permission.
 
    Process descriptor : K:RW, I :R , A :R
+   ( See watchmen.h to know what a formula is )
+   Formula            : K:RW, I :RW, A :R
+   ( See task.h to know what these objects are )
    Task descriptor :    K:RW, M :R , S :R , MA:R , SA:R
    Task prio :          K:RW, M :R , S :R , MA:R , SA:R
    Task data :          K:RW, M :RW, S :R , MA:R , SA:R

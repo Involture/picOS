@@ -1,12 +1,10 @@
-#ifndef _KERNEL_TASK_H
-#define _KERNEL_TASK_H
+#ifndef _TASK_H
+#define _TASK_H
 
 #include <stdint.h>
 #include <stddef.h>
-#include <var_array.h>
-#include <kernel/scheduler/proc.h>
-
-#include <kernel/scheduler/task.h>
+#include <lex_list.h>
+#include <proc.h>
 
 // *** TYPE DEFINITIONS ***
 
@@ -15,9 +13,8 @@ typedef uint16_t tid_t;
 /* A priority list is formed with the list of the priorities of the parent 
    tasks. They are compared using lexical order starting with the most ancient
    task. Each element of this list is a signed 8bit integer.
-   This list is stored in an array of variable size.
  */
-typedef var_array task_prio_t;
+typedef ll_t task_prio_t;
 
 /* This is the data type passed in argument for task delegation and report.
  */
