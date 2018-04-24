@@ -4,38 +4,49 @@
 #include <stdint.h>
 #include <stddef.h>
 #include <stdbool.h>
-#include <table.h>
 #include <prio_queue.h>
+#include <var_array.h>
+
+#include <kernel/scheduler/proc.h>
 
 // *** TYPE DEFINITIONS ***
 
+/*** TEMPORARY, waiting for the header of the file system */
 typedef unsigned char* path_t;
+/***/
+
 typedef uint16_t pid_t;
 
+/* Describe a processus */
 typedef struct {
+  id : pid_t;
   code : path_t;
   parent : pid_t;
-  children : table_t;
-  pending : prio_queue_t;
-} proc;
-
-// *** VARIABLES ***
-
-table_t proc_table;   // A table associating pid with their processus.
+  children : var_array_t;   // An array containing pointers to the processus
+                            //   descriptor of the children.
+  pending : prio_queue_t;   // A queue of pointers to task descriptor to be 
+                            //   served.
+  delegated : var_array_t;  // An array of pointers to delegated task 
+                            //   descriptors.
+} proc_t;
 
 // *** PARENT SIDE FUNCTIONS ***
 
 /* Create a new process executing the code specified by path
  */ 
-pid_t proc_birth(path);
+pid_t proc_birth(path_t);
 
-/* Send a signal to a child process, asking it to commit suicide and transfer
-   control to the child process.
+/* Wait for the processus to commit suicide. The processus calling this
+   function is simply put in a waiting state. Control is transfered to the
+   highest priority waiting process. Once the child commited suicide, the
+   process becomes available for running again.
  */
 bool proc_bury(pid_t);
 
 /* Purely instantly kill a child process, without giving it a chance to do
    any action.
+   The action performed are the same as if the child process had called
+   proc_suicide (see below).
  */
 void proc_kill(pid_t);
 
@@ -46,10 +57,58 @@ bool proc_abandon(pid, new_parent_pid);
 
 /* Terminate the process, free all the memory.
    When calling this function :
-   - All the pending delegated tasks are canceled and deleted.
-   - All the pending tasks to be served are aborted (reported with cancel code).
+   - All the pending delegated tasks are labeled to be claimed by the kernel.
+   - All the pending tasks to be served reported with an null pointer as data.
    - All the children are killed.
  */
 void proc_suicide(void);
+
+// *** COMMENTS ON MEMORY ACCESS CONSIDERATIONS ***
+
+/* The memory manager must consider which data is accessible to which process.
+   Hardware memory protection must be implemented to ensure security.
+
+   Here we examinate the data declared in this files and in task.h. We list,
+   for all of them, the permissions that should be set. We use the following
+   notations :
+
+   To name a processus :
+     * K is the kernel.
+   For a process descriptor :
+     * I is the processus itself
+     * A are all the ancestors of the concerned process
+   For a task descriptor :
+     * M is the supervisor
+     * S is the salve
+     * MA are the ancestors of the supervisor
+     * SA are the ancestors of the slave
+
+   To name a permission :
+     * R is reading permission
+     * W is writing permission
+
+   To each datum, we associate a list of permissions of the form
+   processus:permission.
+   Any omitted processus has no permission.
+
+   Process descriptor : K:RW, I :R , A :R
+   Task descriptor :    K:RW, M :R , S :R , MA:R , SA:R
+   Task prio :          K:RW, M :R , S :R , MA:R , SA:R
+   Task data :          K:RW, M :RW, S :R , MA:R , SA:R
+   Task report :        K:RW, M :R , S :RW, MA:R , SA:R
+
+   The goal of the memory manager is :
+   - To create a resizeable physical memory area for each datum.
+   - To map the each area to any process that has read access on it.
+   - To ensure the area is not mapped for any process that hasnt memory access
+   on it.
+   - To set permissions for processes that has write access.
+   - To minimize the changements of memory mapping when context switching. In
+   order to do this, multiple processus that have a read access on the same
+   datum should, has much as possible, have this datum mapped to the same
+   virtual address.
+
+   GOOD LUCK PADAWAN, MAY THE FORCE BE WITH YOU.
+ */
 
 #endif
