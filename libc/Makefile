@@ -37,14 +37,27 @@ string/memcpy.o \
 string/memmove.o \
 string/memset.o \
 string/strlen.o \
-cycle_array/ca_mk.o \
-cycle_array/ca_append.o \
-cycle_array/ca_change.o \
-cycle_array/ca_get.o \
-fifo/fifo_mk.o \
-fifo/fifo_enqueue.o \
-fifo/fifo_dequeue.o \
-fifo/fifo_is_empty.o \
+structs/hashtbl/hashtbl_add.o \
+structs/hashtbl/hashtbl_create.o \
+structs/hashtbl/hashtbl_delete.o \
+structs/hashtbl/hashtbl_get.o \
+structs/hashtbl/hashtbl_remove.o \
+structs/prio_queue/pq_create.o \
+structs/prio_queue/pq_delete.o \
+structs/prio_queue/pq_is_empty.o \
+structs/prio_queue/pq_read.o \
+structs/prio_queue/pq_read_top.o \
+structs/prio_queue/pq_remove.o \
+structs/prio_queue/pq_remove_top.o \
+structs/table/table_add.o \
+structs/table/table_create.o \
+structs/table/table_delete.o \
+structs/table/table_get.o \
+structs/table/table_remove.o \
+structs/table/table_size.o \
+structs/var_array/va_create.o \
+structs/var_array/va_delete.o \
+structs/var_array/va_get.o \
 
 HOSTEDOBJS=\
 $(ARCH_HOSTEDOBJS) \

@@ -7,6 +7,6 @@ if [ $debug ]
   -s -S -cdrom picOS.iso &
   gdb -s picOS.sym -ex "target remote localhost:1234"
   else
-  qemu-system-$(.scripts/target-triplet-to-arch.sh $HOST) -d guest_errors \ 
+  qemu-system-$(./scripts/target-triplet-to-arch.sh $HOST) -d guest_errors \
   -cdrom picOS.iso
 fi

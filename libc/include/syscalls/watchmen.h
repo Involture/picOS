@@ -63,9 +63,9 @@ typedef uint8_t* wm_formula_t;
 
 /* This type represent a listener. It is the address of a base_formula.
  */
-typedef /* TO BE COMPLETED BY THE MEMORY HEADER TYPES */ wm_listener_t;
+typedef uint8_t* wm_listener_t;
 
-// *** VARIABLES ***
+// *** VARIABLES *** To be moved in kernel code !!!
 
 /* A table of all the state bytes of the watchmen. The fact it is a table 
    allows watchmen to add or remove bytes. The offset in the formulas are
