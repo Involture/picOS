@@ -2,8 +2,8 @@
 #define _WATCHMEN_H
 
 #include <stdint.h>
-#include <table.h>
-#include <list.h>
+#include <structs/table.h>
+#include <structs/var_array.h>
 
 // *** GENERAL CONSIDERATIONS ***
 

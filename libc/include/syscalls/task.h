@@ -3,8 +3,8 @@
 
 #include <stdint.h>
 #include <stddef.h>
-#include <lex_list.h>
-#include <proc.h>
+#include <structs/var_array.h>
+#include <syscalls/proc.h>
 
 // *** TYPE DEFINITIONS ***
 
@@ -14,26 +14,32 @@ typedef uint16_t tid_t;
    tasks. They are compared using lexical order starting with the most ancient
    task. Each element of this list is a signed 8bit integer.
  */
-typedef ll_t task_prio_t;
+typedef va_t task_prio_t;
 
 /* This is the data type passed in argument for task delegation and report.
  */
 typedef struct {
-  ptr : /* TO BE COMPLETED BY THE MEMORY HEADER TYPES */,
-  size : size_t,
+  void* ptr;
+  size_t size;
 } task_data_t;
+
+typedef enum {
+  PENDING,
+  SERVED,
+  FINISHED,
+} task_state_t;
 
 /* A task descriptor
  */
 typedef struct {
-  id : tid_t,
-  prio : task_prio_t,
-  supervisor_id : pid_t,
-  slave_id : pid_t,
-  data : task_data_t,
-  state : task_state_t,
-  position : /* TO BE COMPLETED BY THE MEMORY HEADER TYPES */,
-  report : /* TO BE COMPLETED BY THE MEMORY HEADER TYPES */,
+  tid_t id;
+  task_prio_t prio;
+  pid_t supervisor_id;
+  pid_t slave_id;
+  task_data_t data;
+  task_state_t state;
+  void* position;
+  void* report;
 } task_t;
 
 // *** SUPERVISOR SIDE FUNCTIONS ***
@@ -83,8 +89,10 @@ bool task_serve(size_t);
    the tasks being served. Give back control if an other stack with a higher
    priority can be executed.
  */
-void task_report (tid_t, task_data_t);
+void task_report(tid_t, task_data_t);
 
 // *** COMMENTS ON MEMORY ACCESS CONSIDERATIONS ***
 /* Plz refere to proc.h.
  */
+
+#endif

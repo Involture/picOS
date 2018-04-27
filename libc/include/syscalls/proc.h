@@ -4,8 +4,8 @@
 #include <stdint.h>
 #include <stddef.h>
 #include <stdbool.h>
-#include <prio_queue.h>
-#include <hash_table.h>
+#include <structs/prio_queue.h>
+#include <structs/hashtbl.h>
 
 // *** TYPE DEFINITIONS ***
 
@@ -17,14 +17,14 @@ typedef uint16_t pid_t;
 
 /* Describe a processus */
 typedef struct {
-  id : pid_t;
-  code : path_t;
-  parent : pid_t;
-  children : hashtbl_t;     // An table containing pointers to the processus
+  pid_t id;
+  path_t code;
+  pid_t parent;
+  hashtbl_t children;       // An table containing pointers to the processus
                             //   descriptor of the children.
-  pending : pq_t;           // A queue of pointers to task descriptor to be 
+  pq_t pending;             // A queue of pointers to task descriptor to be 
                             //   served.
-  delegated : hashtbl_t;    // An table of pointers to delegated task 
+  hashtbl_t delegated;      // An table of pointers to delegated task 
                             //   descriptors.
 } proc_t;
 
@@ -46,10 +46,10 @@ bool proc_bury(pid_t);
    The action performed are the same as if the child process had called
    proc_suicide (see below).
  */
-void proc_kill(pid_t);
+bool proc_kill(pid_t);
 
 /* Detach the a process and attach it to a new parent */
-bool proc_abandon(pid, new_parent_pid);
+bool proc_abandon(pid_t, pid_t);
 
 // *** CHILD SIDE FUNCTIONS ***
 
