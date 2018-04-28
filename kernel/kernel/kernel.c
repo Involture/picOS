@@ -11,8 +11,10 @@
 #include <kernel/interrupt_as.h>
 #include <kernel/dump.h>
 
+#include <kernel/ps2_kbd_kmp.h>
+
 void kernel_init(void) {
-	tty_ext_initialize();
+  tty_ext_initialize();
 
   dt_init_gdt();
   //dt_print_gdt();
@@ -22,20 +24,25 @@ void kernel_init(void) {
   //dt_print_idt();
 
   cpuid_set();
+  // step 0
   printf("cpuid : %w\n", cpuid, 4);
 
   pic_remap(32, 40, 0xFFFD);
   interrupt_as_enable();
 
+  // step 1
+  // kernel/arch/i386/ps2_ctrl.c
   ps2_ctrl_init();
 }
 
 void kernel_main(void) {
   kernel_init();
   puts("Init sequence ended");
+  // ok until now
+  ps2_clear();
   while(1);
   ps2_ctrl_timeout = -1;
-  while (1) {
-    printf("Data : %x\n", ps2_ctrl_inb());
-  }
+  // step 2
+  // kernel/arch/i386/interrupt.c
 }
+
