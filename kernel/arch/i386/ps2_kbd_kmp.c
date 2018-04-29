@@ -7,20 +7,16 @@
 
 static unsigned char ps2_kbd_kmp_history[PS2_KBD_KMP_HISTORY_SIZE];
 
-char ps2_kbd_kmp_pos = 0;
-char ps2_kbd_kmp_pos_last_cmd = -1;
+unsigned char ps2_kbd_kmp_pos = 0;
+unsigned char ps2_kbd_kmp_pos_last_cmd = PS2_KBD_KMP_HISTORY_SIZE - 1;
 unsigned char ps2_kbd_kmp_pos_shift;
 
 void ps2_kbd_kmp_load(unsigned char x) {
-	ps2_kbd_kmp_history[(unsigned char) (ps2_kbd_kmp_pos % PS2_KBD_KMP_HISTORY_SIZE)] = x;
-
+    // GCC prevents a negative index from being used I think
+	ps2_kbd_kmp_history[ps2_kbd_kmp_pos % PS2_KBD_KMP_HISTORY_SIZE] = x;
 	ps2_kbd_kmp_is_cmd(ps2_kbd_kmp_history);
-
 	ps2_kbd_kmp_pos += 1;
 	ps2_kbd_kmp_pos %= PS2_KBD_KMP_HISTORY_SIZE;
-	// printf("%x ", ps2_kbd_kmp_pos);
-	// printf("%x ", ps2_kbd_kmp_pos_shift);
-	// printf("%x\n", ps2_kbd_kmp_pos_last_cmd);
 };
 
 void pli(unsigned long int a) {
@@ -66,13 +62,18 @@ void ps2_clear() {
 void ps2_kbd_kmp_is_cmd(unsigned char* history) {
 	unsigned char last_cmd[3] = {0};
 
-	ps2_kbd_kmp_pos_shift = (unsigned char) (((unsigned char) (ps2_kbd_kmp_pos - ps2_kbd_kmp_pos_last_cmd)) % PS2_KBD_KMP_HISTORY_SIZE);
+	ps2_kbd_kmp_pos_shift = ps2_kbd_kmp_pos - ps2_kbd_kmp_pos_last_cmd;
+    // necessary in order to cope correctly with unsigned chars
+    while (ps2_kbd_kmp_pos_shift > PS2_KBD_KMP_HISTORY_SIZE) {
+        ps2_kbd_kmp_pos_shift -= PS2_KBD_KMP_HISTORY_SIZE;
+    }
 
     unsigned char i = 0;
     unsigned char j = 0;
     // printf("Buffer:");
     while (i <= (ps2_kbd_kmp_pos_shift - 1) && i <= 2) {
-        j = (ps2_kbd_kmp_pos - i);
+        j = ps2_kbd_kmp_pos - i;
+        // necessary in order to cope correctly with unsigned chars
         while (j > PS2_KBD_KMP_HISTORY_SIZE) {
             j -= PS2_KBD_KMP_HISTORY_SIZE;
         }
@@ -117,6 +118,7 @@ void ps2_kbd_kmp_is_cmd(unsigned char* history) {
     char* last_cmd_chr = "";
     unsigned char last_cmd_is_pressed = 1;
     unsigned char is_cmd = 1;
+    // should be moved in another file, left to do
     switch(a) {
         case 0x00:
             switch(b) {
