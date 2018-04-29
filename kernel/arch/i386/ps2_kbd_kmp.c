@@ -9,7 +9,7 @@ static unsigned char ps2_kbd_kmp_history[PS2_KBD_KMP_HISTORY_SIZE];
 
 char ps2_kbd_kmp_pos = 0;
 char ps2_kbd_kmp_pos_last_cmd = -1;
-char ps2_kbd_kmp_pos_shift = 1;
+unsigned char ps2_kbd_kmp_pos_shift;
 
 void ps2_kbd_kmp_load(unsigned char x) {
 	ps2_kbd_kmp_history[(unsigned char) (ps2_kbd_kmp_pos % PS2_KBD_KMP_HISTORY_SIZE)] = x;
@@ -68,50 +68,55 @@ void ps2_kbd_kmp_is_cmd(unsigned char* history) {
 
 	ps2_kbd_kmp_pos_shift = (unsigned char) (((unsigned char) (ps2_kbd_kmp_pos - ps2_kbd_kmp_pos_last_cmd)) % PS2_KBD_KMP_HISTORY_SIZE);
 
-	// printf("%x ", ps2_kbd_kmp_pos);
-	// printf("%x ", ps2_kbd_kmp_pos_shift);
-	// printf("%x\n", ps2_kbd_kmp_pos_last_cmd);
-	unsigned char i = 0;
-	while (i <= (ps2_kbd_kmp_pos_shift - 1) && i <= 2) {
-		last_cmd[2-i] = history[((unsigned char) ((ps2_kbd_kmp_pos - i) % PS2_KBD_KMP_HISTORY_SIZE))];
-		// printf("%x ", last_cmd[2-i]);
-		i += 1;
-	};
-	// printf("\n");
-	unsigned char a = 0x00;
-	unsigned char b = 0x00;
-	unsigned char c = 0x00;
-	switch (ps2_kbd_kmp_pos_shift) {
-		case 1:
-			a = 0x00;
-			b = 0x00;
-			c = last_cmd[2];
-			break;
-		case 2:
-			a = 0x00;
-			b = last_cmd[1];
-			c = last_cmd[2];
-			break;
-		case 3:
-			a = last_cmd[0];
-			b = last_cmd[1];
-			c = last_cmd[2];
-			break;
-		default:
-			a = 0x00;
-			b = 0x00;
-			c = 0x00;
-	}
+    unsigned char i = 0;
+    unsigned char j = 0;
+    // printf("Buffer:");
+    while (i <= (ps2_kbd_kmp_pos_shift - 1) && i <= 2) {
+        j = (ps2_kbd_kmp_pos - i);
+        while (j > PS2_KBD_KMP_HISTORY_SIZE) {
+            j -= PS2_KBD_KMP_HISTORY_SIZE;
+        }
+        // printf("%x: ", j);
+        last_cmd[i] = history[j];
+        // printf("%x ", last_cmd[i]);
+        i += 1;
+    };
+    // printf("\n");
+    unsigned char a = 0x00;
+    unsigned char b = 0x00;
+    unsigned char c = 0x00;
+    switch (ps2_kbd_kmp_pos_shift) {
+        case 1:
+            a = 0x00;
+            b = 0x00;
+            c = last_cmd[0];
+            break;
+        case 2:
+            a = 0x00;
+            b = last_cmd[1];
+            c = last_cmd[0];
+            break;
+        case 3:
+            a = last_cmd[2];
+            b = last_cmd[1];
+            c = last_cmd[0];
+            break;
+        default:
+            a = 0x00;
+            b = 0x00;
+            c = 0x00;
+    }
 
-	// printf("%x ", a);
-	// printf("%x ", b);
-	// printf("%x\n", c);
+    // printf("%x ", a);
+    // printf("%x ", b);
+    // printf("%x\n", c);
 
 
-	char* last_cmd_name = "";
-	char* last_cmd_chr = "";
-	unsigned char last_cmd_is_pressed = 1;
-	unsigned char is_cmd = 1;
+
+    char* last_cmd_name = "";
+    char* last_cmd_chr = "";
+    unsigned char last_cmd_is_pressed = 1;
+    unsigned char is_cmd = 1;
     switch(a) {
         case 0x00:
             switch(b) {
@@ -231,11 +236,6 @@ void ps2_kbd_kmp_is_cmd(unsigned char* history) {
                             last_cmd_name = "2";
                             last_cmd_is_pressed = 1;
                             last_cmd_chr = "2";
-                            break;
-                        case 0x1F:
-                            last_cmd_name = "Windows";
-                            last_cmd_is_pressed = 1;
-                            last_cmd_chr = "";
                             break;
                         case 0x21:
                             last_cmd_name = "C";
@@ -408,7 +408,7 @@ void ps2_kbd_kmp_is_cmd(unsigned char* history) {
                             last_cmd_chr = "p";
                             break;
                         case 0x4E:
-                            last_cmd_name = "\no";
+                            last_cmd_name = "no";
                             last_cmd_is_pressed = 1;
                             last_cmd_chr = "°";
                             break;
@@ -560,6 +560,11 @@ void ps2_kbd_kmp_is_cmd(unsigned char* history) {
                             break;
                         case 0x14:
                             last_cmd_name = "CtrlR";
+                            last_cmd_is_pressed = 1;
+                            last_cmd_chr = "";
+                            break;
+                        case 0x1F:
+                            last_cmd_name = "Windows";
                             last_cmd_is_pressed = 1;
                             last_cmd_chr = "";
                             break;
@@ -749,11 +754,6 @@ void ps2_kbd_kmp_is_cmd(unsigned char* history) {
                             last_cmd_is_pressed = 0;
                             last_cmd_chr = "";
                             break;
-                        case 0x1F:
-                            last_cmd_name = "Windows released";
-                            last_cmd_is_pressed = 0;
-                            last_cmd_chr = "";
-                            break;
                         case 0x21:
                             last_cmd_name = "C released";
                             last_cmd_is_pressed = 0;
@@ -925,7 +925,7 @@ void ps2_kbd_kmp_is_cmd(unsigned char* history) {
                             last_cmd_chr = "";
                             break;
                         case 0x4E:
-                            last_cmd_name = "\no released";
+                            last_cmd_name = "no released";
                             last_cmd_is_pressed = 0;
                             last_cmd_chr = "";
                             break;
@@ -1098,6 +1098,11 @@ void ps2_kbd_kmp_is_cmd(unsigned char* history) {
                             last_cmd_is_pressed = 0;
                             last_cmd_chr = "";
                             break;
+                        case 0x1F:
+                            last_cmd_name = "Windows released";
+                            last_cmd_is_pressed = 0;
+                            last_cmd_chr = "";
+                            break;
                         case 0x4A:
                             last_cmd_name = "k/ released";
                             last_cmd_is_pressed = 0;
@@ -1178,27 +1183,38 @@ void ps2_kbd_kmp_is_cmd(unsigned char* history) {
 
 
 
+    // printf("Pos: %x ; ", ps2_kbd_kmp_pos);
+    // printf("shift: %x ;", ps2_kbd_kmp_pos_shift);
+    // printf("last pos: %x\n", ps2_kbd_kmp_pos_last_cmd);
 
     // printf("%x\n", is_cmd);
-	if (is_cmd == 1) {
-		ps2_kbd_kmp_pos_last_cmd = ps2_kbd_kmp_pos;
-		printf("Key: %s\n", last_cmd_name);
-		// printf("%s", last_cmd_chr);
-		// printf("Is pressed: %x\n", last_cmd_is_pressed);
-	}
+    // printf("History:");
+    // for (int i = 0; i < PS2_KBD_KMP_HISTORY_SIZE; ++i)
+    // {
+    //     printf("%x ", history[i]);
+    // }
+    // printf("\n");
+    if (is_cmd == 1) {
+        ps2_kbd_kmp_pos_last_cmd = ps2_kbd_kmp_pos;
+        printf("Key: %s\n", last_cmd_name);
+        // printf("%s", last_cmd_chr);
+        // printf("Is pressed: %x\n", last_cmd_is_pressed);
+    }
+    //  else {
+    //     printf("No key recognized\n");
+    // }
 
-	// printf("%x\n", s);
-	// // char a = rslt[ps2_kbd_kmp_pos];
-	// // char b = rslt[(ps2_kbd_kmp_pos - 1) % PS2_KBD_KMP_HISTORY_SIZE];
-	// // char c = rslt[(ps2_kbd_kmp_pos - 2) % PS2_KBD_KMP_HISTORY_SIZE];
+    // printf("%x\n", s);
+    // // char a = rslt[ps2_kbd_kmp_pos];
+    // // char b = rslt[(ps2_kbd_kmp_pos - 1) % PS2_KBD_KMP_HISTORY_SIZE];
+    // // char c = rslt[(ps2_kbd_kmp_pos - 2) % PS2_KBD_KMP_HISTORY_SIZE];
 
-	// // printf("%x\n", a);s
-	// // printf("%x\n", b);
-	// // printf("%x\n", c);
-	// // printf("%x\n", PS2_KBD_KMP_HISTORY_SIZE);
-	// for (int i = 0; i < PS2_KBD_KMP_HISTORY_SIZE; ++i)
-	// {
-	// 	printf("%x: %x ", i, history[i]);
-	// }
-	// printf("%x\n", ps2_kbd_kmp_pos);
+    // // printf("%x\n", a);s
+    // // printf("%x\n", b);
+    // // printf("%x\n", c);
+    // // printf("%x\n", PS2_KBD_KMP_HISTORY_SIZE);
+    // printf("\n");
+    // printf("\n");
+    // printf("%x\n", ps2_kbd_kmp_pos);
+    // printf("\n");
 };

@@ -26,7 +26,7 @@ Suppr, E0;71
 8, 3E,8
 9, 46,9
 0, 45,0
-\no, 4E,°
+no, 4E,°
 +, 55,+
 Backspace, 66,
 
@@ -75,7 +75,7 @@ ShiftR, 59,
 
 CtrlL, 14,
 ##Fn, /,
-Windows, 1F,
+Windows, E0;1F,
 AltL, 11,
 Espace, 29, 
 AltGr, E0;11,
