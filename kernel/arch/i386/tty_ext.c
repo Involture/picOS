@@ -148,6 +148,28 @@ void tty_ext_putchar(char c) {
 	};
 }
 
+void tty_ext_rm_last_char(void) {
+  if (term_column == 0) {
+    term_column = VGA_WIDTH - 1;
+    if (history_line_pos == 0) {
+      history_line_pos = HISTORY_LINES - 1;
+    } else {
+      history_line_pos -= 1;
+    }
+    screen_ofs--;
+    // if (screen_ofs >= 0) {
+    tty_ext_scroll_up();
+    // }
+  } else {
+    term_column -= 1;
+  }
+  size_t term_row = VGA_HEIGHT - 1 + screen_ofs;
+  term_buffer[term_column + term_row * VGA_WIDTH] = ' ';
+
+  // what about the history ?
+  history[history_line_pos * VGA_WIDTH + term_column] = NULL;
+}
+
 void tty_ext_write(const char* data, size_t size) {
   for (size_t i = 0; i < size; i++)
     tty_ext_putchar(data[i]);

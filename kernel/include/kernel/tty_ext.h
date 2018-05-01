@@ -18,4 +18,7 @@ void tty_ext_putchar(char);
 void tty_ext_write(const char*, size_t);
 void tty_ext_write_string(const char*);
 
+/* Deleting */
+void tty_ext_rm_last_char(void);
+
 #endif

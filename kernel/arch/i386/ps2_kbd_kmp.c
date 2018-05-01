@@ -1,19 +1,22 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <stdbool.h>
+#include <kernel/tty.h>
+#include <kernel/tty_ext.h>
 #include <kernel/ps2_ctrl.h>
 #include <kernel/ps2_kbd.h>
 #include <kernel/ps2_kbd_kmp.h>
 
 static unsigned char ps2_kbd_kmp_history[PS2_KBD_KMP_HISTORY_SIZE] = {0};
 static unsigned char ps2_kbd_kmp_keyboard_state[256] = {0};
+static unsigned char ps2_kbd_kmp_capslock_state = 0;
 
 unsigned char ps2_kbd_kmp_pos = 0;
 unsigned char ps2_kbd_kmp_pos_last_cmd = PS2_KBD_KMP_HISTORY_SIZE - 1;
 unsigned char ps2_kbd_kmp_pos_shift;
 
 void ps2_kbd_kmp_load(unsigned char x) {
-    // GCC prevents a negative index from being used I think
+    // gcc prevents a negative index from being used I think
 	ps2_kbd_kmp_history[ps2_kbd_kmp_pos % PS2_KBD_KMP_HISTORY_SIZE] = x;
 	ps2_kbd_kmp_is_cmd(&ps2_kbd_kmp_history);
 	ps2_kbd_kmp_pos += 1;
@@ -122,25 +125,32 @@ void ps2_kbd_kmp_is_cmd(unsigned char* history) {
     unsigned char kc = 255;
     unsigned char last_cmd_is_pressed = 1;
     unsigned char is_cmd = 1;
-    // should be moved in another file, left to do
 
     #include "ps2_kbd_kmp_switch.c"
 
     if (last_cmd_is_pressed == 1) {
         // printf("%x\n", kc);
         ps2_kbd_kmp_keyboard_state[kc] = 1;
+        if (kc == PS2_KBD_KMP_CAPSLOCK) {
+            ps2_kbd_kmp_capslock_state = (ps2_kbd_kmp_capslock_state == 1) ? 0 : 1;
+        }
     } else {
         ps2_kbd_kmp_keyboard_state[kc] = 0;
     }
 
-    unsigned kbd_mode = 0;
-    if (ps2_kbd_kmp_keyboard_state[PS2_KBD_KMP_SHIFTL] == 1 || ps2_kbd_kmp_keyboard_state[PS2_KBD_KMP_SHIFTR] == 1) {
-        kbd_mode = 1;
-        // printf("hell yeah fellas\n");
+
+    unsigned kbd_mode = ps2_kbd_kmp_capslock_state;
+    if ((ps2_kbd_kmp_keyboard_state[PS2_KBD_KMP_SHIFTL] == 1) || (ps2_kbd_kmp_keyboard_state[PS2_KBD_KMP_SHIFTR] == 1)) {
+        kbd_mode = 1 - kbd_mode;
     } else {
         if (ps2_kbd_kmp_keyboard_state[PS2_KBD_KMP_ALTR] == 1) {
             kbd_mode = 2;
         }
+    }
+
+    if (ps2_kbd_kmp_keyboard_state[PS2_KBD_KMP_BACKSPACE] == 1) {
+        tty_ext_rm_last_char();
+        ps2_kbd_kmp_keyboard_state[PS2_KBD_KMP_BACKSPACE] = 0;
     }
 
     // printf("Pos: %x ; ", ps2_kbd_kmp_pos);

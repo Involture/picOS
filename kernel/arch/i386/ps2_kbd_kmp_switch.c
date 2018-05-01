@@ -217,7 +217,7 @@
                             kc = 67;
                             last_cmd_chr1 = "e";
                             last_cmd_chr2 = "E";
-                            last_cmd_chr3 = "";
+                            last_cmd_chr3 = "€";
                             break;
                         case 0x25:
                             last_cmd_name = " 4";
@@ -511,7 +511,7 @@
                             last_cmd_name = " Entree";
                             last_cmd_is_pressed = 1;
                             kc = 77;
-                            last_cmd_chr1 = "";
+                            last_cmd_chr1 = "\n";
                             last_cmd_chr2 = "";
                             last_cmd_chr3 = "";
                             break;
