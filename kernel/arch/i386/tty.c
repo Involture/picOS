@@ -12,9 +12,12 @@ const size_t VGA_HEIGHT = 25;
 const size_t VGA_SIZE = 80 * 25;
 uint16_t* const term_buffer = (uint16_t*) 0xB8000;
 
+static unsigned char empty_char = 0x00;
+
+
 void tty_initialize(void) {
   for (size_t i = 0; i < VGA_SIZE; i++) {
-    term_buffer[i] = vga_entry(' ', VGA_COLOR_BLACK);
+    term_buffer[i] = vga_entry(empty_char, VGA_COLOR_BLACK);
 	}
 }
 

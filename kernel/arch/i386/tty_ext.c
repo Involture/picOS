@@ -5,8 +5,11 @@
 
 #include <kernel/tty.h>
 #include <kernel/tty_ext.h>
+#include <stdio.h>
 
 #include "vga.h"
+
+static unsigned char empty_char = 0x00;
 
 static const size_t HISTORY_LINES = 50 * 25;
 static const size_t HISTORY_SIZE = 50 * 25 * 80;
@@ -72,9 +75,9 @@ static void retreive_history(void) {
 /* Handling special characters */
 
 static void new_line(void) {
-  tty_ext_putchar(' ');
+  tty_ext_putchar(empty_char);
   while (term_column != 0)
-    tty_ext_putchar(' ');
+    tty_ext_putchar(empty_char);
 };
 
 static bool handle_special_char(unsigned char ic) {
@@ -95,16 +98,16 @@ void tty_ext_initialize(void) {
   history_line_pos = 24; 
   screen_ofs = 0;
   term_column = 0;
-  term_color = vga_entry_color(VGA_COLOR_WHITE, VGA_COLOR_BLACK);
+  term_color = vga_entry_color(VGA_COLOR_GREEN, VGA_COLOR_BLACK);
   for (size_t i = 0; i < HISTORY_SIZE; i++) {
-    history[i] = vga_entry(' ', term_color);
+    history[i] = vga_entry(empty_char, term_color);
   };
 }
 
   /* Browsing */
 
 void tty_ext_go_up(size_t ofs) {
-  int8_t new_screen_ofs = screen_ofs + ofs;
+  int8_t new_screen_ofs = screen_ofs + (int8_t) ofs;
   screen_ofs = 
     (new_screen_ofs < MAX_SCREEN_OFS) ? new_screen_ofs : MAX_SCREEN_OFS;
   retreive_history(); 
@@ -149,22 +152,27 @@ void tty_ext_putchar(char c) {
 }
 
 void tty_ext_rm_last_char(void) {
+  size_t term_row = VGA_HEIGHT - 1 + screen_ofs;
+
   if (term_column == 0) {
+    tty_ext_scroll_up();
     term_column = VGA_WIDTH - 1;
+    screen_ofs = screen_ofs - 1;    
+    term_buffer[term_column + term_row * VGA_WIDTH] = vga_entry(empty_char, term_color);
+
+    while (term_column > 0 && term_buffer[term_column - 1 + term_row * VGA_WIDTH] == vga_entry(empty_char, term_color)) {
+      term_column -= 1;
+    }
+
     if (history_line_pos == 0) {
       history_line_pos = HISTORY_LINES - 1;
     } else {
       history_line_pos -= 1;
     }
-    screen_ofs--;
-    // if (screen_ofs >= 0) {
-    tty_ext_scroll_up();
-    // }
   } else {
     term_column -= 1;
+    term_buffer[term_column + term_row * VGA_WIDTH] = empty_char;
   }
-  size_t term_row = VGA_HEIGHT - 1 + screen_ofs;
-  term_buffer[term_column + term_row * VGA_WIDTH] = ' ';
 
   // what about the history ?
   history[history_line_pos * VGA_WIDTH + term_column] = NULL;
