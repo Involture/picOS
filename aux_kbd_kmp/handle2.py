@@ -1,6 +1,6 @@
 import numpy as np
 
-scs = open("scs2adapted_completed.txt", "r")
+scs = open("scs2.txt", "r")
 
 blank = False
 
@@ -68,16 +68,24 @@ while True:
 	else:
 		blank = False
 
-		part = 0
-		p1_caption = ""
+		part = -1
 
+		p0_id = ""
+		p1_caption = ""
 		p2_content = ""
 		p2_parsed_content = []
-
 		p3_content = ""
+		p3_parsed_content = []
 
 		for c in line:
-			if part == 0:
+			print(line)
+			if part == -1:
+				if c != ",":
+					p0_id += c
+				else:
+					part = 0
+
+			elif part == 0:
 				if c != ",":
 					p1_caption += c
 				else:
@@ -93,9 +101,22 @@ while True:
 					p2_content += c
 			elif part == 2:
 				if c == "\n":
-					pass
+					if p3_content == "":
+						pass
+					else:
+						if p3_content == " ":
+							p3_parsed_content.append(" ")
+							p3_parsed_content.append(" ")
+							p3_parsed_content.append(" ")
+						else:
+							for k in p3_content.split(' '):
+								p3_parsed_content.append(k)
+					while len(p3_parsed_content) < 3:
+						p3_parsed_content.append("")
 				else:
 					p3_content += c
+
+		print(p3_parsed_content)
 
 		# to catch the case when a keyboard key is released
 		r_p2_parsed_content = []
@@ -118,7 +139,7 @@ while True:
 		r_s2 = format(r_s, '06x').upper()
 
 
-		tree[r_s2] = [p1_caption+" released", r_p2_parsed_content, 0, ""]
+		tree[r_s2] = [p1_caption+" released", r_p2_parsed_content, 0, p0_id, "", "", ""]
 		# done
 
 		p2_parsed_content.reverse()
@@ -133,7 +154,7 @@ while True:
 		p2_parsed_content.reverse()
 		s2 = format(s, '06x').upper()
 
-		tree[s2] = [p1_caption, p2_parsed_content, 1, p3_content]
+		tree[s2] = [p1_caption, p2_parsed_content, 1, p0_id, p3_parsed_content[0], p3_parsed_content[1], p3_parsed_content[2]]
 
 scs.close()
 
@@ -227,7 +248,10 @@ for i in L3['0000']:
 	add(n+5, "case 0x"+i+":")
 	add(n+6, "last_cmd_name = \""+str(tree["0000"+i][0])+"\";")
 	add(n+6, "last_cmd_is_pressed = "+str(tree["0000"+i][2])+";")
-	add(n+6, "last_cmd_chr = \""+str(tree["0000"+i][3])+"\";")
+	add(n+6, "kc = "+tree["0000"+i][3]+";")
+	add(n+6, "last_cmd_chr1 = \""+str(tree["0000"+i][4])+"\";")
+	add(n+6, "last_cmd_chr2 = \""+str(tree["0000"+i][5])+"\";")
+	add(n+6, "last_cmd_chr3 = \""+str(tree["0000"+i][6])+"\";")
 	# add(n+6, "last_cmd_name = \""+str(tree[i][0])+"\";")
 	add(n+6, "break;")
 add(n+5, "default:")
@@ -240,7 +264,10 @@ for i in L3['00E0']:
 	add(n+5, "case 0x"+i+":")
 	add(n+6, "last_cmd_name = \""+str(tree["00E0"+i][0])+"\";")
 	add(n+6, "last_cmd_is_pressed = "+str(tree["00E0"+i][2])+";")
-	add(n+6, "last_cmd_chr = \""+str(tree["00E0"+i][3])+"\";")
+	add(n+6, "kc = "+tree["00E0"+i][3]+";")
+	add(n+6, "last_cmd_chr1 = \""+str(tree["00E0"+i][4])+"\";")
+	add(n+6, "last_cmd_chr2 = \""+str(tree["00E0"+i][5])+"\";")
+	add(n+6, "last_cmd_chr3 = \""+str(tree["00E0"+i][6])+"\";")
 	# add(n+6, "last_cmd_name = \""+str(tree[i][0])+"\";")
 	add(n+6, "break;")
 add(n+5, "default:")
@@ -253,7 +280,10 @@ for i in L3['00F0']:
 	add(n+5, "case 0x"+i+":")
 	add(n+6, "last_cmd_name = \""+str(tree["00F0"+i][0])+"\";")
 	add(n+6, "last_cmd_is_pressed = "+str(tree["00F0"+i][2])+";")
-	add(n+6, "last_cmd_chr = \""+str(tree["00F0"+i][3])+"\";")
+	add(n+6, "kc = "+tree["00F0"+i][3]+";")
+	add(n+6, "last_cmd_chr1 = \""+str(tree["00F0"+i][4])+"\";")
+	add(n+6, "last_cmd_chr2 = \""+str(tree["00F0"+i][5])+"\";")
+	add(n+6, "last_cmd_chr3 = \""+str(tree["00F0"+i][6])+"\";")
 	# add(n+6, "last_cmd_name = \""+str(tree[i][0])+"\";")
 	add(n+6, "break;")
 add(n+5, "default:")
@@ -296,7 +326,10 @@ for i in L3['E0F0']:
 	add(n+5, "case 0x"+i+":")
 	add(n+6, "last_cmd_name = \""+str(tree["E0F0"+i][0])+"\";")
 	add(n+6, "last_cmd_is_pressed = "+str(tree["E0F0"+i][2])+";")
-	add(n+6, "last_cmd_chr = \""+str(tree["E0F0"+i][3])+"\";")
+	add(n+6, "kc = "+tree["E0F0"+i][3]+";")
+	add(n+6, "last_cmd_chr1 = \""+str(tree["E0F0"+i][4])+"\";")
+	add(n+6, "last_cmd_chr2 = \""+str(tree["E0F0"+i][5])+"\";")
+	add(n+6, "last_cmd_chr3 = \""+str(tree["E0F0"+i][6])+"\";")
 	# add(n+6, "last_cmd_name = \""+str(tree[i][0])+"\";")
 	add(n+6, "break;")
 add(n+4, "}")
