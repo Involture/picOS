@@ -36,7 +36,10 @@ void kernel_init(void) {
   // kernel/arch/i386/ps2_ctrl.c
   ps2_ctrl_init();
   sysenter_init();
-  task_data_t returned_data = *syscall(0xBABE, NULL, 0);
+
+  uint32_t data = 0xFAFABEBE;
+
+  task_data_t returned_data = *syscall(0xBABE, &data, sizeof(data));
   printf("Returned data size : %x\n", returned_data.size);
   printf("Data : %w\n", &(returned_data.ptr), returned_data.size);
 }

@@ -24,12 +24,12 @@
 .type sysexit, @function
 .type sysreturn, @function
 
-.section .bss
-sysenter_return_eip :  .double
-sysenter_return_esp :  .double
-sysenter_return_data : .double
-sysenter_return_size : .double
-sysenter_returned_flag : .byte
+.section .data.
+sysenter_return_eip :    .long 0x00000000
+sysenter_return_esp :    .long 0x00000000
+sysenter_return_data :   .long 0x00000000
+sysenter_return_size :   .long 0x00000000
+sysenter_returned_flag : .byte 0x00
 
 .section .text
 
@@ -67,7 +67,7 @@ sysenter_init :
   # Setting the kernel stack.
   mov $0x175, ecx
   rdmsr
-  mov $debug_stack_bottom, eax
+  mov $debug_stack_top, eax
   wrmsr
 
   ret
@@ -80,13 +80,13 @@ sysreturn:
 
   movb $0, sysenter_returned_flag
 
-  mov (esp), eax
+  mov 4(esp), eax
   mov eax, sysenter_return_eip
 
-  mov 4(esp), eax
+  mov 8(esp), eax
   mov eax, sysenter_return_esp
 
-  mov 8(esp), eax
+  mov 12(esp), eax
   mov (eax), ecx
   mov ecx, sysenter_return_data
 
