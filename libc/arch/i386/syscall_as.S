@@ -1,31 +1,33 @@
 .att_syntax noprefix
 
+.section .text
 .global syscall
-
 .type syscall, @function
 
-.section .text
-
-# void* syscall(uin16_t, void*, size_t)
+# void* syscall(size_t, void*, size_t)
 syscall :
-  # Saving registers
+    
+  # Saving registers not saved by syscall :
   push ebp
   mov esp, ebp
   push ebx
   push edi
   push esi
-  
-  # Putting argument in registers
+
+  # Setting syscall argument
   mov 8(ebp), eax
+  mov esp, ecx
+  mov $syscall_return_point, edx
   mov 12(ebp), edi
   mov 16(ebp), esi
-  mov esp, ecx
-  mov $return_point, edx
+  
+  # Entering kernel
   sysenter
 
-return_point:
+syscall_return_point:
   pop esi
   pop edi
-  pop ebx
+  pop edx
   pop ebp
   ret
+

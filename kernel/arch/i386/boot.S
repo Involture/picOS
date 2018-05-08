@@ -1,3 +1,9 @@
+# Global variables
+.global stack_bottom
+.global stack_top
+.global debug_stack_bottom
+.global debug_stack_top
+
 # Declare constants for the multiboot header.
 .set ALIGN,    1<<0             # align loaded modules on page boundaries
 .set MEMINFO,  1<<1             # provide memory map
@@ -18,6 +24,14 @@
 stack_bottom:
 .skip 16384 # 16 KiB
 stack_top:
+
+# Reserve a stack for a second kernel thread, for debuging purpose for the
+# moment.
+.align 16
+debug_stack_bottom:
+.skip 16384
+debug_stack_top:
+
 
 # The kernel entry point.
 .section .text

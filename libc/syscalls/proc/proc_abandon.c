@@ -5,8 +5,8 @@
 #include <syscalls/proc.h>
 
 bool proc_abandon(pid_t pid, pid_t new_parent_pid) {
-  pid_t data[2];
-  data[0] = pid;
-  data[1] = new_parent_pid;
-  return *((bool*) syscall(SYSCALL_PROC_ABANDON, data, 4));
+  struct syscall_proc_abandon data;
+  data.child_pid = pid;
+  data.new_parent_pid = new_parent_pid;
+  return *((bool*) syscall(SYSCALL_PROC_ABANDON, *data, sizeof(data));
 }

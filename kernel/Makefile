@@ -31,7 +31,7 @@ KERNEL_OBJS=\
 $(KERNEL_ARCH_OBJS) \
 kernel/kernel.o \
 kernel/ps2_kbd.o \
-kernel/syscall.o \
+kernel/sysenter.o \
 
 OBJS=\
 $(ARCHDIR)/crti.o \

@@ -2,7 +2,10 @@
 #define _SYSCALL_H
 
 #include <stddef.h>
-#include <syscall_as.h>
+#include <stdint.h>
+#include <proc.h>
+#include <task.h>
+#include <watchmen.h>
 
 #define SYSCALL_PROC_BIRTH      0x0000
 #define SYSCALL_PROC_BURY       0x0001
@@ -17,9 +20,34 @@
 #define SYSCALL_WATCHMEN_READ   0x0200
 #define SYSCALL_WATCHMEN_ALARM  0x0201
 
-/* The function called in ring 0 to handle syscalls
+// Now we define the structurs used to pass arguments to the kernel :
+
+struct syscall_proc_abandon {
+  pid_t child_pid;
+  pid_t new_parent_pid;
+};
+struct syscall_task_delegate {
+  pid_t slave;
+  int8_t rel_prio;
+  task_data_t data;
+};
+struct syscall_task_report {
+  tid_t task;
+  task_data_t data;
+};
+struct syscall_wm_alarm {
+  wm_formula_t formula;
+  size_t size;
+};
+
+/* A fonction to make a syscall. Calling sysenter directly will eventually cause
+   and exception.
+   - Returns a pointer to data returned by the kernel.
+   - First argument is the call code
+   - Second argument is a pointer to the data transmitted to the kernel.
+   - Third argument is the size of this data.
  */
-void syscall_master_handler(size_t, void*, size_t);
-void* syscall(size_t, void*, size_t);
+
+extern task_data_t* syscall(uint16_t, void*, size_t);
 
 #endif

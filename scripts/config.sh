@@ -26,7 +26,10 @@ export INCLUDEDIR=$PREFIX/include
 
 export CFLAGS='-O2'
 if [ $debug ]
-  then export CFLAGS="$CFLAGS -g"
+  then export CFLAGS="$CFLAGS -D __MY_DEBUG__"
+fi
+if [ $gdb ]
+  then export CFLAGS="$CFLAGS -ggdb"
 fi
 if [ $warns_as_errors ]
   then export CFLAGS="$CFLAGS -Werror"

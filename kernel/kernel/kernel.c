@@ -10,6 +10,8 @@
 #include <kernel/interrupt.h>
 #include <kernel/interrupt_as.h>
 #include <kernel/dump.h>
+#include <kernel/sysenter.h>
+#include <syscall.h>
 
 #include <kernel/ps2_kbd_kmp.h>
 
@@ -33,6 +35,10 @@ void kernel_init(void) {
   // step 1
   // kernel/arch/i386/ps2_ctrl.c
   ps2_ctrl_init();
+  sysenter_init();
+  task_data_t returned_data = *syscall(0xBABE, NULL, 0);
+  printf("Returned data size : %x\n", returned_data.size);
+  printf("Data : %w\n", &(returned_data.ptr), returned_data.size);
 }
 
 void kernel_main(void) {

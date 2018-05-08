@@ -14,12 +14,12 @@
 #
 #   Build options
 #     --force Force the project to be built, bypassing warnings
+#     --debug  Define the __MY_DEBUG__ macro.
 #
 #   Iso options
 #
 #   Qemu options
-#     -gdb | --debug
-#             Lauch qemu monitored by gdb
+#     --gdb    Lauch qemu monitored by gdb
 #
 
 # managing arguments
@@ -31,6 +31,8 @@ export qemu=""
 export flash=""
 export clean=""
 export warns_as_errors="defined"
+export debug=""
+export gdb=""
 
 while [[ $# -gt 0 ]]
 do
@@ -87,9 +89,13 @@ do
     shift
     export warns_as_errors=""
     ;;
-  -gdb|--debug)
+  --debug)
     shift
     export debug="defined"
+    ;;
+  --gdb)
+    shift
+    export gdb="defined"
     ;;
   *)
     echo "mk : Unkown option : $1"

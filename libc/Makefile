@@ -31,33 +31,15 @@ FREEOBJS=\
 $(ARCH_FREEOBJS) \
 stdio/printf.o \
 stdio/puts.o \
-stdlib/abort.o \
+stdlib/panic.o \
 string/memcmp.o \
 string/memcpy.o \
 string/memmove.o \
 string/memset.o \
 string/strlen.o \
-structs/hashtbl/hashtbl_add.o \
-structs/hashtbl/hashtbl_create.o \
-structs/hashtbl/hashtbl_delete.o \
-structs/hashtbl/hashtbl_get.o \
-structs/hashtbl/hashtbl_remove.o \
-structs/prio_queue/pq_create.o \
-structs/prio_queue/pq_delete.o \
-structs/prio_queue/pq_is_empty.o \
-structs/prio_queue/pq_read.o \
-structs/prio_queue/pq_read_top.o \
-structs/prio_queue/pq_remove.o \
-structs/prio_queue/pq_remove_top.o \
-structs/table/table_add.o \
-structs/table/table_create.o \
-structs/table/table_delete.o \
-structs/table/table_get.o \
-structs/table/table_remove.o \
-structs/table/table_size.o \
-structs/var_array/va_create.o \
-structs/var_array/va_delete.o \
-structs/var_array/va_get.o \
+
+HOSTEDOBJS=\
+$(ARCH_HOSTEDOBJS) \
 syscalls/proc/proc_birth.o \
 syscalls/proc/proc_bury.o \
 syscalls/proc/proc_kill.o \
@@ -70,9 +52,6 @@ syscalls/task/task_serve.o \
 syscalls/task/task_report.o \
 syscalls/watchmen/wm_read.o \
 syscalls/watchmen/wm_alarm.o \
-
-HOSTEDOBJS=\
-$(ARCH_HOSTEDOBJS) \
 
 OBJS=\
 $(FREEOBJS) \

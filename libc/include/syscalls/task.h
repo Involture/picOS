@@ -1,46 +1,12 @@
-#ifndef _TASK_H
-#define _TASK_H
+#ifndef _SYSCALLS_TASK_H
+#define _SYSCALLS_TASK_H
 
-#include <stdint.h>
 #include <stddef.h>
-#include <structs/var_array.h>
-#include <syscalls/proc.h>
+#include <stdbool.h>
+#include <stdint.h>
+#include <task.h>
 
 // *** TYPE DEFINITIONS ***
-
-typedef uint16_t tid_t;
-
-/* A priority list is formed with the list of the priorities of the parent 
-   tasks. They are compared using lexical order starting with the most ancient
-   task. Each element of this list is a signed 8bit integer.
- */
-typedef va_t task_prio_t;
-
-/* This is the data type passed in argument for task delegation and report.
- */
-typedef struct {
-  void* ptr;
-  size_t size;
-} task_data_t;
-
-typedef enum {
-  PENDING,
-  SERVED,
-  FINISHED,
-} task_state_t;
-
-/* A task descriptor
- */
-typedef struct {
-  tid_t id;
-  task_prio_t prio;
-  pid_t supervisor_id;
-  pid_t slave_id;
-  task_data_t data;
-  task_state_t state;
-  void* position;
-  void* report;
-} task_t;
 
 // *** SUPERVISOR SIDE FUNCTIONS ***
 

@@ -1,5 +1,5 @@
-#ifndef _VAR_ARRAY_H
-#define _VAR_ARRAY_H
+#ifndef _STRUCTS_VAR_ARRAY_H
+#define _STRUCTS_VAR_ARRAY_H
 
 #include <stddef.h>
 
@@ -8,12 +8,19 @@
    - Create
    - Delete
    - Get
+   - Get length
+   - Append to end
+   - Copy
  */
 
 typedef void* va_t;
 
-va_t va_create(size_t, size_t/*, mem_mode_t */);
+va_t va_create(size_t, size_t);
+va_t va_copy(va_t);
 void va_delete(va_t);
 void* va_get(va_t, size_t);
+size_t va_len(va_t);
+void va_append(va_t, void*);
+
 
 #endif

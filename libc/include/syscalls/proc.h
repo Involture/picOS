@@ -1,32 +1,8 @@
-#ifndef _PROC_H
-#define _PROC_H
+#ifndef _SYSCALLS_PROC_H
+#define _SYSCALLS_PROC_H
 
-#include <stdint.h>
-#include <stddef.h>
 #include <stdbool.h>
-#include <structs/prio_queue.h>
-#include <structs/hashtbl.h>
-
-// *** TYPE DEFINITIONS ***
-
-/*** TEMPORARY, waiting for the header of the file system */
-typedef unsigned char* path_t;
-/***/
-
-typedef uint16_t pid_t;
-
-/* Describe a processus */
-typedef struct {
-  pid_t id;
-  path_t code;
-  pid_t parent;
-  hashtbl_t children;       // An table containing pointers to the processus
-                            //   descriptor of the children.
-  pq_t pending;             // A queue of pointers to task descriptor to be 
-                            //   served.
-  hashtbl_t delegated;      // An table of pointers to delegated task 
-                            //   descriptors.
-} proc_t;
+#include <proc.h>
 
 // *** PARENT SIDE FUNCTIONS ***
 

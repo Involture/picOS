@@ -5,7 +5,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
-#define GDT_SIZE 3
+#define GDT_SIZE 5
 #define IDT_SIZE 256
 
 // An entry for the gdt. Bits need to be reordered to produce an entry readable
