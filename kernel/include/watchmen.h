@@ -1,7 +1,6 @@
 #ifndef _WATCHMEN_H
 #define _WATCHMEN_H
 
-#include <schtyp.h>
 #include <structs/table.h>
 
 // *** GENERAL CONSIDERATIONS ***

@@ -3,32 +3,30 @@
 
 #include <stdint.h>
 #include <stddef.h>
-#include <schtyp.h>
 
 /* This is the data type passed in argument for task delegation and report.
  */
-typedef struct foo {
+struct task_data_t {
   void* ptr;
   size_t size;
-} __attribute__((__packed__))
-task_data_t;
+} __attribute__((__packed__)) ;
 
-typedef enum {
+enum task_state_t {
   TSTATE_PENDING,
   TSTATE_SERVED,
   TSTATE_FINISHED,
-} task_state_t;
+};
 
 /* A task descriptor
  */
-typedef struct {
+struct tdesc_t {
   tid_t id;
   prio_t prio;
   pid_t supervisor_id;
   pid_t slave_id;
-  task_data_t data;
-  task_state_t state;
-  task_data_t report;
-} tdesc_t;
+  struct task_data_t data;
+  enum task_state_t state;
+  struct task_data_t report;
+};
 
 #endif

@@ -2,7 +2,6 @@
 #define _PROC_H
 
 #include <stdint.h>
-#include <schtyp.h>
 #include <structs/prio_queue.h>
 #include <structs/table.h>
 
@@ -10,7 +9,7 @@
 typedef unsigned char* path_t;
 /***/
 
-typedef struct {
+struct proc_preempted_state_t {
   uint32_t eip;
   uint32_t edi;
   uint32_t esi;
@@ -20,43 +19,43 @@ typedef struct {
   uint32_t ecx;
   uint32_t ebx;
   uint32_t eax;
-} proc_preempted_state_t;
+};
 
-typedef struct {
+struct proc_syscall_state_t {
   uint32_t eip;
   uint32_t esp;
-} proc_syscall_state_t;
+};
 
-typedef enum {
+enum proc_state_t {
   PSTATE_VACANT,
   PSTATE_RUNNABLE_SYSCALL,
   PSTATE_RUNNABLE_PREEMPTED,
   PSTATE_BURYING,
   PSTATE_CLAIMING,
   PSTATE_SLEEPING,
-} proc_state_t;
+};
 
-typedef union {
+union proc_state_data_t {
   pid_t pid;
   tid_t tid;
   wm_formula_t formula;
-} proc_state_data_t;
+};
 
-typedef union {
-  proc_preempted_state_t preempted;
-  proc_syscall_state_t syscall;
-} proc_regs_t;
+union proc_regs_t {
+  struct proc_preempted_state_t preempted;
+  struct proc_syscall_state_t syscall;
+};
 
-typedef struct {
+struct proc_t {
   pid_t id;
   prio_t prio;
   path_t code;
-  proc_state_t state;
-  proc_state_data_t state_data;
-  proc_regs_t regs;
+  enum proc_state_t state;
+  union proc_state_data_t state_data;
+  union proc_regs_t regs;
   pid_t parent;
   pq_t pending;
-} proc_t;
+};
 
 table_t proc_table;
 

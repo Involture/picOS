@@ -1,8 +1,11 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-#include <kernel/cpuid_as.h>
 #include <kernel/cpuid.h>
+
+// Assembly functions
+extern uint32_t get_cpuid(uint32_t*);
+//
 
 uint32_t cpuid_value = 0;
 uint32_t* cpuid = &cpuid_value;

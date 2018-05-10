@@ -5,13 +5,12 @@
    - ebx is reserved for now.
    - ecx must contain the stack pointer just before calling sysenter.
    - edx must contain the return instruction pointer.
-   - edi must contain the data pointer for the system call.
-   - esi must contain the size of this data.
+   - edi must contain the task_data pointer for the system call.
+   - esi is reserved for now.
    No register except esp is saved across system call.
    
    After sysexit you can expect :
-   - eax to contain a pointer to the data returned by the kernel.
-   - ebx to contain the data size.
+   - eax to contain a pointer to the task_data struct returned by the kernel.
    NO OTHER REGISTER TO HAVE DEFINED VALUE.
  */
 
@@ -28,14 +27,12 @@
 sysenter_return_eip :    .long 0x00000000
 sysenter_return_esp :    .long 0x00000000
 sysenter_return_data :   .long 0x00000000
-sysenter_return_size :   .long 0x00000000
 sysenter_returned_flag : .byte 0x00
 
 .section .text
 
 syscall_entry_point_wrapper :
   # Pushing arguments
-  push esi
   push edi
   push edx
   push ecx
@@ -87,11 +84,7 @@ sysreturn:
   mov eax, sysenter_return_esp
 
   mov 12(esp), eax
-  mov (eax), ecx
-  mov ecx, sysenter_return_data
-
-  mov 4(eax), ecx
-  mov ecx, sysenter_return_data
+  mov eax, sysenter_return_data
 
   mov $0, eax
   ret
@@ -101,12 +94,12 @@ already_returned:
   ret
 
 
-# bool sysexit()
+# bool sysexit(void)
 # Dont forget ! On sysexit, the kernel stack is discarded !!!
+
 sysexit :
 
   mov sysenter_return_data, eax
-  mov sysenter_return_size, ebx
   mov sysenter_return_esp, ecx
   mov sysenter_return_eip, edx
 

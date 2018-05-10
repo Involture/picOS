@@ -2,14 +2,32 @@
 #include <stdint.h>
 #include <stddef.h>
 #include <stdio.h>
+
 #include <kernel/dtconf.h>
-#include <kernel/interrupt_as.h>
-#include <kernel/dt_as.h>
 
 #include <kernel/dt.h>
 
+// TYPE DEFINITIONS
+
+// Describe a descriptor table. Argument for lidt and lgdt instructions
+struct table_ptr {
+  uint16_t limit;
+  uint32_t base;
+} __attribute__((packed));
+
+// CONSTANTS
+
 static uint64_t picOS_gdt[GDT_SIZE] = {0};
 static uint64_t picOS_idt[IDT_SIZE] = {0};
+
+// ASSEMBLY EXTERN FUNCTIONS
+
+extern void dt_set_gdt(struct table_ptr);
+extern void dt_set_idt(struct table_ptr);
+// Reload the segments from the gdt after setting it
+extern void dt_reload_cs(void);
+
+// STATIC FUNCTIONS
 
 /* To understand the following, please refer to GDT entry layout.
 It consists of distributing the bits of the previous structure over 8 bytes
@@ -76,10 +94,12 @@ static void make_idt(uint64_t* dest, struct idt_entry* source, size_t size) {
     dest[i] = make_idt_entry(source[i]);
 }
 
-void print_dt(uint64_t* dt, size_t size) {
+static void print_dt(uint64_t* dt, size_t size) {
   for (size_t i = 0; i < size; i++)
     printf("dt_entry %x : %w\n", i, dt + i, 8);
 };
+
+// GLOBAL FUNCTIONS
 
 void dt_print_gdt(void) {
   puts("Printing generated gdt :");
@@ -93,16 +113,17 @@ void dt_print_idt(void) {
 
 void dt_init_gdt(void) {
   make_gdt(picOS_gdt, gdt_conf, GDT_SIZE);
-  struct dt_ptr ptr = {.limit = sizeof(picOS_gdt), 
-                       .base = (uint32_t) picOS_gdt
-                      };
-  dt_as_set_gdt(ptr);
+  struct table_ptr ptr = {.limit = sizeof(picOS_gdt), 
+                          .base = (uint32_t) picOS_gdt
+                         };
+  dt_set_gdt(ptr);
+  dt_reload_cs();
 };
 
 void dt_init_idt(void) {
   make_idt(picOS_idt, idt_conf, IDT_SIZE);
-  struct dt_ptr ptr = {.limit = sizeof(picOS_idt), 
-                       .base = (uint32_t) picOS_idt
-                      };
-  dt_as_set_idt(ptr);
+  struct table_ptr ptr = {.limit = sizeof(picOS_idt), 
+                          .base = (uint32_t) picOS_idt
+                         };
+  dt_set_idt(ptr);
 };

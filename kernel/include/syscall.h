@@ -29,16 +29,18 @@ struct syscall_proc_abandon {
 struct syscall_task_delegate {
   pid_t slave;
   int8_t rel_prio;
-  task_data_t data;
+  struct task_data_t data;
 };
 struct syscall_task_report {
   tid_t task;
-  task_data_t data;
+  struct task_data_t data;
 };
 struct syscall_wm_alarm {
   wm_formula_t formula;
   size_t size;
 };
+
+// Defining the data structures returned by the kernel
 
 /* A fonction to make a syscall. Calling sysenter directly will eventually cause
    and exception.
@@ -48,6 +50,6 @@ struct syscall_wm_alarm {
    - Third argument is the size of this data.
  */
 
-extern task_data_t* syscall(uint16_t, void*, size_t);
+extern struct task_data_t* syscall(uint16_t, struct task_data_t*);
 
 #endif

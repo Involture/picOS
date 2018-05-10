@@ -1,3 +1,6 @@
+#ifndef _KERNEL_CPUID_H
+#define _KERNEL_CPUID_H
+
 #include <stdint.h>
 #include <stdbool.h>
 
@@ -38,3 +41,5 @@ uint32_t* cpuid;
 void cpuid_set(void);
 // Perform bit wise and with the cpuid to determine if a feature is enabled
 bool cpuid_has_feat(uint32_t);
+
+#endif

@@ -2,13 +2,11 @@
 #include <stdint.h>
 #include <kernel/tty_ext.h>
 #include <kernel/dt.h>
-#include <kernel/dt_as.h>
 #include <kernel/cpuid.h>
 #include <kernel/pic.h>
 #include <kernel/port.h>
 #include <kernel/ps2_ctrl.h>
 #include <kernel/interrupt.h>
-#include <kernel/interrupt_as.h>
 #include <kernel/dump.h>
 #include <kernel/sysenter.h>
 #include <syscall.h>
@@ -20,7 +18,6 @@ void kernel_init(void) {
 
   dt_init_gdt();
   //dt_print_gdt();
-  dt_as_reload_cs();
 
   dt_init_idt();
   //dt_print_idt();
@@ -30,7 +27,7 @@ void kernel_init(void) {
   printf("cpuid : %w\n", cpuid, 4);
 
   pic_remap(32, 40, 0xFFFD);
-  interrupt_as_enable();
+  interrupt_enable();
 
   // step 1
   // kernel/arch/i386/ps2_ctrl.c
@@ -38,10 +35,14 @@ void kernel_init(void) {
   sysenter_init();
 
   uint32_t data = 0xFAFABEBE;
+  struct task_data_t td;
+  td.ptr = &data;
+  td.size = sizeof(data);
 
-  task_data_t returned_data = *syscall(0xBABE, &data, sizeof(data));
-  printf("Returned data size : %x\n", returned_data.size);
-  printf("Data : %w\n", &(returned_data.ptr), returned_data.size);
+  volatile struct task_data_t* returned_data;
+  returned_data = syscall(0xBABE, &td);
+  printf("Returned data size : %x\n", returned_data->size);
+  printf("Data : %w\n", returned_data->ptr, returned_data->size);
 }
 
 void kernel_main(void) {

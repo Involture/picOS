@@ -6,7 +6,7 @@
 
 .section .text
 
-# void* syscall(uin16_t, void*, size_t)
+# struct task_data_t* syscall(uin16_t, struct task_data_t*)
 syscall :
   # Saving registers
   push ebp
@@ -18,7 +18,6 @@ syscall :
   # Putting argument in registers
   mov 8(ebp), eax
   mov 12(ebp), edi
-  mov 16(ebp), esi
   mov esp, ecx
   mov $return_point, edx
   sysenter
