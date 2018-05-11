@@ -4,7 +4,6 @@
 #include <stddef.h>
 #include <stdbool.h>
 #include <stdint.h>
-#include <task.h>
 
 // *** TYPE DEFINITIONS ***
 
@@ -22,7 +21,7 @@
    The function also checks the correctness of the data. In case of failure, the
    task is immediatly aborted.
  */
-tid_t task_delegate(pid_t, int8_t, task_data_t);
+tid_t task_delegate(pid_t, int8_t, struct data_t);
 
 /* Claim the result of a given delegated task.
    Two cases can occure :
@@ -31,7 +30,7 @@ tid_t task_delegate(pid_t, int8_t, task_data_t);
    - The task is being served or is pending : Control is transfered to the
    server process until the task is finished.
  */
-task_data_t task_claim(tid_t);
+struct data_t task_claim(tid_t);
 
 // *** SLAVE SIDE FUNCTIONS ***
 
@@ -39,7 +38,7 @@ task_data_t task_claim(tid_t);
    task in the pending queue. Return a null pointer if there is less that n
    tasks pending.
  */
-task_t* task_read(size_t);
+struct tdesc_t* task_read(size_t);
 
 /* n being the argument, label the n_th task in the pending stack as being
    served.
@@ -55,7 +54,7 @@ bool task_serve(size_t);
    the tasks being served. Give back control if an other stack with a higher
    priority can be executed.
  */
-void task_report(tid_t, task_data_t);
+void task_report(tid_t, struct data_t);
 
 // *** COMMENTS ON MEMORY ACCESS CONSIDERATIONS ***
 /* Plz refere to proc.h.

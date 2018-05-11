@@ -1,7 +1,13 @@
+#include <schtyp.h>
+#include <task.h>
 #include <syscall.h>
-
 #include <syscalls/task.h>
 
-task_data_t task_claim(tid_t tid) {
-  return *((task_data_t*) syscall(SYSCALL_TASK_CLAIM, &tid, sizeof(tid)));
+struct data_t task_claim(tid_t tid) {
+  struct data_t td;
+  td.ptr = &tid;
+  td.size = sizeof(tid);
+  return *((struct data_t*) 
+           (syscall(SYSCALL_TASK_CLAIM, &td)->ptr)
+          );
 }

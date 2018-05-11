@@ -37,6 +37,18 @@ string/memcpy.o \
 string/memmove.o \
 string/memset.o \
 string/strlen.o \
+syscalls/proc/proc_birth.o \
+syscalls/proc/proc_bury.o \
+syscalls/proc/proc_kill.o \
+syscalls/proc/proc_abandon.o \
+syscalls/proc/proc_suicide.o \
+syscalls/task/task_delegate.o \
+syscalls/task/task_claim.o \
+syscalls/task/task_read.o \
+syscalls/task/task_serve.o \
+syscalls/task/task_report.o \
+syscalls/watchmen/wm_read.o \
+syscalls/watchmen/wm_alarm.o \
 
 HOSTEDOBJS=\
 $(ARCH_HOSTEDOBJS) \

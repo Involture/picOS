@@ -6,11 +6,6 @@
 
 /* This is the data type passed in argument for task delegation and report.
  */
-struct task_data_t {
-  void* ptr;
-  size_t size;
-} __attribute__((__packed__)) ;
-
 enum task_state_t {
   TSTATE_PENDING,
   TSTATE_SERVED,
@@ -24,9 +19,9 @@ struct tdesc_t {
   prio_t prio;
   pid_t supervisor_id;
   pid_t slave_id;
-  struct task_data_t data;
+  struct data_t data;
   enum task_state_t state;
-  struct task_data_t report;
+  struct data_t report;
 };
 
 #endif

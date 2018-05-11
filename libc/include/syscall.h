@@ -3,9 +3,6 @@
 
 #include <stddef.h>
 #include <stdint.h>
-#include <proc.h>
-#include <task.h>
-#include <watchmen.h>
 
 #define SYSCALL_PROC_BIRTH      0x0000
 #define SYSCALL_PROC_BURY       0x0001
@@ -29,11 +26,11 @@ struct syscall_proc_abandon {
 struct syscall_task_delegate {
   pid_t slave;
   int8_t rel_prio;
-  struct task_data_t data;
+  struct data_t data;
 };
 struct syscall_task_report {
   tid_t task;
-  struct task_data_t data;
+  struct data_t data;
 };
 struct syscall_wm_alarm {
   wm_formula_t formula;
@@ -50,6 +47,6 @@ struct syscall_wm_alarm {
    - Third argument is the size of this data.
  */
 
-extern struct task_data_t* syscall(uint16_t, struct task_data_t*);
+extern struct data_t* syscall(uint16_t, struct data_t*);
 
 #endif

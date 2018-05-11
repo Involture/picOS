@@ -1,8 +1,13 @@
+#include <schtyp.h>
+#include <task.h>
 #include <syscall.h>
-#include <stddef.h>
-
 #include <syscalls/task.h>
 
-task_t* task_read(size_t index) {
-  return ((task_t*) syscall(SYSCALL_TASK_READ, &index, sizeof(index)));
+struct tdesc_t* task_read(size_t index) {
+  struct data_t td;
+  td.ptr = &index;
+  td.size = sizeof(index);
+  return ((struct tdesc_t*)
+          (syscall(SYSCALL_TASK_READ, &td)->ptr)
+         );
 }

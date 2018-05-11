@@ -1,8 +1,15 @@
 #include <stdbool.h>
-#include <syscall.h>
 
+#include <schtyp.h>
+#include <proc.h>
+#include <syscall.h>
 #include <syscalls/proc.h>
 
 bool proc_bury(pid_t pid) {
-  return *((bool*) syscall(SYSCALL_PROC_BURY, &pid, 2));
+  struct data_t td;
+  td.ptr = &pid;
+  td.size = sizeof(pid);
+  return *((bool*) 
+           (syscall(SYSCALL_PROC_BURY, &td)->ptr)
+          );
 }

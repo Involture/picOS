@@ -6,7 +6,7 @@
 
 .section .text
 
-# struct task_data_t* syscall(uin16_t, struct task_data_t*)
+# struct data_t* syscall(uin16_t, struct data_t*)
 syscall :
   # Saving registers
   push ebp

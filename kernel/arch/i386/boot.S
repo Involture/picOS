@@ -1,3 +1,5 @@
+.att_syntax noprefix
+
 # Declare constants for the multiboot header.
 .set ALIGN,    1<<0             # align loaded modules on page boundaries
 .set MEMINFO,  1<<1             # provide memory map
@@ -37,13 +39,15 @@ debug_stack_top:
 .section .text
 .global _start
 .type _start, @function
+
 _start:
-	movl $stack_top, %esp
+	movl $stack_top, esp
 
 	# Call the global constructors.
 	call _init
 
 	# Transfer control to the main kernel.
+  push ebx
 	call kernel_main
 
 	# Hang if kernel_main unexpectedly returns.

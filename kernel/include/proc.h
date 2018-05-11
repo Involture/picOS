@@ -6,7 +6,7 @@
 #include <structs/table.h>
 
 /*** TEMPORARY, waiting for the header of the file system */
-typedef unsigned char* path_t;
+typedef char* path_t;
 /***/
 
 struct proc_preempted_state_t {

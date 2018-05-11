@@ -2,7 +2,6 @@
 #define _SYSCALLS_PROC_H
 
 #include <stdbool.h>
-#include <proc.h>
 
 // *** PARENT SIDE FUNCTIONS ***
 

@@ -69,7 +69,7 @@ sysenter_init :
 
   ret
 
-# void sysreturn(uint32_t, uint32_t, task_data_t*)
+# void sysreturn(uint32_t, uint32_t, struct data_t*)
 sysreturn:
   mov sysenter_returned_flag, al
   test al, al

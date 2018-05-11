@@ -7,7 +7,7 @@ void task_handle_init() {
 }
 
 void task_handle_delegate(pid_t slave_id, int8_t rel_prio, 
-                           task_data_t data, proc_regs_t regs) {
+                          data_t data, proc_regs_t regs) {
   pdesc = CURRENT_PDESC;
   slave_pdesc = table_get(proc_table, slave_id);
 
@@ -30,10 +30,10 @@ void task_handle_delegate(pid_t slave_id, int8_t rel_prio,
   proc_handle_chprio(slave_id, slave_prio);
 }
 
-task_data_t task_handle_claim(tid_t id) {
+struct data_t task_handle_claim(tid_t id) {
   pdesc = CURRENT_DESC; 
   tdesc = table_get(task_table, id);
-  task_data_t empty;
+  struct data_t empty;
   empty.size = 0;
   empty.prt = NULL;
   switch (tdesc->state) {
@@ -62,7 +62,7 @@ bool task_handle_serve(size_t index) {
   }
 }
 
-bool task_handle_report(tid_t id, task_data_t data) {
+bool task_handle_report(tid_t id, struct data_t data) {
   tdesc = table_get(task_table, id);
   supervisor_desc = table_get(proc_table, tdesc->supervisor);
   switch (tdesc->state) {
