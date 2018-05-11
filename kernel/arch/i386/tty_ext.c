@@ -98,7 +98,7 @@ void tty_ext_initialize(void) {
   history_line_pos = 24; 
   screen_ofs = 0;
   term_column = 0;
-  term_color = vga_entry_color(VGA_COLOR_GREEN, VGA_COLOR_BLACK);
+  term_color = vga_entry_color(VGA_COLOR_LIGHT_GREEN, VGA_COLOR_BLACK);
   for (size_t i = 0; i < HISTORY_SIZE; i++) {
     history[i] = vga_entry(empty_char, term_color);
   };

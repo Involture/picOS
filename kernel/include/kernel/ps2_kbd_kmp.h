@@ -6,9 +6,12 @@
 #define PS2_KBD_KMP_SHIFTL 128
 #define PS2_KBD_KMP_SHIFTR 140
 #define PS2_KBD_KMP_ALTR 165
+#define PS2_KBD_KMP_CAPSLOCK 96
 #define PS2_KBD_KMP_BACKSPACE 45
 
-#define PS2_KBD_KMP_CAPSLOCK 96
+#define PS2_KBD_KMP_ENTER 77
+#define PS2_KBD_KMP_CTRLL 160
+#define PS2_KBD_KMP_S 100
 
 void ps2_kbd_kmp_load(unsigned char);
 void ps2_kbd_kmp_is_cmd(unsigned char*);
