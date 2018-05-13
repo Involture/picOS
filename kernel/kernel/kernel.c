@@ -43,7 +43,7 @@ void kernel_main(struct multiboot_info_t* infos) {
   printf("Info available flags : %w\n", &(infos->flags), 4);
   puts("Init sequence ended");
 
-  pid_t new_process = proc_birth("exectuable.elf");
+  // pid_t new_process = proc_birth("exectuable.elf");
 
   // ok until now
   while(1);

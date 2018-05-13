@@ -187,8 +187,12 @@ void ps2_kbd_kmp_is_cmd(unsigned char* history) {
 
     if (dc == 0 && ps2_kbd_kmp_keyboard_state[PS2_KBD_KMP_ENTER] == 1) {
         if (shell_mode == 1) {
-            shell_exec(shell_last_cmd);
-            is_cmd = 0;
+            printf("\n");
+            shell_exec(shell_last_cmd, shell_last_cmd_pos);
+            for (int i = 0; i < SHELL_CMD_MAX_LENGTH; ++i)
+            {
+                shell_last_cmd[i] = 0;
+            }
             shell_mode = 0;
             ps2_kbd_kmp_keyboard_state[PS2_KBD_KMP_ENTER] = 0;
             produces_output = 0;
@@ -233,7 +237,7 @@ void ps2_kbd_kmp_is_cmd(unsigned char* history) {
         }
 
         // if (last_cmd_is_pressed == 1) {
-        if (produces_output == 1 && last_cmd_is_pressed == 1 && strlen(last_cmd_chr) != 0) {
+        if (produces_output == 1 && last_cmd_is_pressed == 1) {
             printf("%s", last_cmd_chr);
             if (shell_mode == 1) {
                 shell_last_cmd[shell_last_cmd_pos] = last_cmd_chr[0];

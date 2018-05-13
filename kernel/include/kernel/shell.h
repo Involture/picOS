@@ -3,6 +3,6 @@
 
 #define SHELL_CMD_MAX_LENGTH 65536
 
-void shell_exec(char*);
+void shell_exec(char*, unsigned char);
 
 #endif
