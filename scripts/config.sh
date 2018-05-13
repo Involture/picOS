@@ -24,16 +24,26 @@ export BOOTDIR=/boot
 export LIBDIR=$EXEC_PREFIX/lib
 export INCLUDEDIR=$PREFIX/include
 
-export CFLAGS='-O2'
-if [ $debug ]
-  then export CFLAGS="$CFLAGS -D __MY_DEBUG__"
+if [ $gdb ]; then 
+  export CFLAGS='-O0'
+else
+  export CFLAGS='-Ofast'
 fi
-if [ $gdb ]
-  then export CFLAGS="$CFLAGS -ggdb"
+
+if [ $debug ]; then 
+  export CFLAGS="$CFLAGS -D __MY_DEBUG__"
 fi
-if [ $warns_as_errors ]
-  then export CFLAGS="$CFLAGS -Werror"
+if [ $gdb ]; then 
+  export CFLAGS="$CFLAGS -ggdb"
 fi
+if [ $warns_as_errors ]; then
+  export CFLAGS="$CFLAGS -Werror"
+fi
+export CFLAGS="$CFLAGS -Wno-error=unused-parameter \
+-Wno-error=unused-but-set-variable \
+-Wno-error=unused-variable \
+"
+
 export CPPFLAGS=''
 
 # Configure the cross-compiler to use the desired system root.

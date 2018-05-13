@@ -103,4 +103,5 @@ sysexit :
   mov sysenter_return_esp, ecx
   mov sysenter_return_eip, edx
 
+  sti
   sysexit

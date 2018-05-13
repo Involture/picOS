@@ -105,10 +105,10 @@ do
 done
 
 set -e
+. ./scripts/config.sh
 if [ $gdb ]
   then . ./scripts/clean.sh
 fi
-. ./scripts/config.sh
 . ./scripts/headers.sh
 if [ $build ]
   then . ./scripts/build.sh

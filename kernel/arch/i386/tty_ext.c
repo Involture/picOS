@@ -175,7 +175,8 @@ void tty_ext_rm_last_char(void) {
   }
 
   // what about the history ?
-  history[history_line_pos * VGA_WIDTH + term_column] = NULL;
+  history[history_line_pos * VGA_WIDTH + term_column] = 
+    vga_entry(empty_char, term_color);
 }
 
 void tty_ext_write(const char* data, size_t size) {

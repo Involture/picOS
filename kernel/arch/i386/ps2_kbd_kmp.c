@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <stdbool.h>
+#include <string.h>
 #include <kernel/tty.h>
 #include <kernel/tty_ext.h>
 #include <kernel/ps2_ctrl.h>

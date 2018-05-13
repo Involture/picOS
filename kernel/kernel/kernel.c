@@ -15,6 +15,7 @@
 #include <syscall.h>
 #include <proc.h>
 #include <syscalls/proc.h>
+#include <kernel/pit.h>
 
 void kernel_init(void) {
   tty_ext_initialize();
@@ -29,25 +30,24 @@ void kernel_init(void) {
   // step 0
   printf("cpuid : %w\n", cpuid, 4);
 
-  pic_remap(32, 40, 0xFFFD);
+  pic_remap(32, 40, 0xFFFC);
   interrupt_enable();
 
   // step 1
   // kernel/arch/i386/ps2_ctrl.c
   ps2_ctrl_init();
   sysenter_init();
+  pit_init();
 }
 
-void kernel_main(struct multiboot_info_t* infos) {
+void kernel_main(struct multiboot_info_t* grub_info) {
+  multiboot_info = *grub_info;
   kernel_init();
-  printf("Info available flags : %w\n", &(infos->flags), 4);
   puts("Init sequence ended");
-
-  // pid_t new_process = proc_birth("exectuable.elf");
+  printf("  high_memory : %w\n", &(multiboot_info.mem_upper), 4);
 
   // ok until now
   while(1);
-  ps2_ctrl_timeout = -1;
   // step 2
   // kernel/arch/i386/interrupt.c
 }

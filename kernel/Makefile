@@ -30,8 +30,8 @@ LIBS:=$(LIBS) $(KERNEL_ARCH_LIBS)
 KERNEL_OBJS=\
 $(KERNEL_ARCH_OBJS) \
 kernel/kernel.o \
-kernel/ps2_kbd.o \
 kernel/sysenter.o \
+kernel/multiboot.o
 
 OBJS=\
 $(ARCHDIR)/crti.o \

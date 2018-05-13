@@ -21,6 +21,25 @@ struct flags_t {
   int unused       : 19;
 };
 
+struct syms_aout_t {
+  uint32_t tabsize;
+  uint32_t strsize;
+  uint32_t addr;
+  uint32_t reserved;
+} __attribute__((__packed__));
+
+struct syms_elf_t {
+  uint32_t num;
+  uint32_t size;
+  uint32_t addr;
+  uint32_t shndx;
+} __attribute__((__packed__));
+
+union syms_t {
+  struct syms_aout_t aout;
+  struct syms_elf_t elf;
+};
+
 struct mem_region_t {
   uint32_t size;
   uint64_t base;
@@ -58,13 +77,13 @@ struct multiboot_info_t {
   char*    cmdline;                 // NOT USED
   uint32_t mods_count;              // NOT USED
   uint32_t mods_add;                // NOT USED
-  uint32_t sym;                     // NOT USED
+  union syms_t syms;                // NOT USED
   struct mem_region_t* mmap_addr;   // Address of the memory map
   uint32_t mmap_len;                // Size of the memory map
   struct drive_t* drive_addr;       // Address of drives information
   uint32_t drive_len;               // Size of drive information
   uint32_t conf_tbl;                // NOT USED
-  uint32_t boot_loader_name;        // NOT USED
+  char* boot_loader_name;        // NOT USED
   struct apm_tbl_t* apm_addr;       // Address of the apm table.
   void*    vbe_control_info;        // Addresses
   void*    vbe_mode_info;
@@ -81,5 +100,6 @@ struct multiboot_info_t {
   uint64_t color_info;
 } __attribute__((__packed__));
 
+struct multiboot_info_t multiboot_info;
 
 #endif

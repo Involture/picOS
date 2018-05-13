@@ -553,8 +553,6 @@ interrupt_isr_wrapper_entry_point_\i:
 .endm
 .macro isr_wrapper_entry_point i
 interrupt_isr_wrapper_entry_point_\i:
-  nop                          # Align instruction on 6 bytes
-  nop
   pushl $\i                    # Push the interrupt number
   jmp real_isr_wrapper
 .endm
