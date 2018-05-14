@@ -14,34 +14,78 @@
 .long FLAGS
 .long CHECKSUM
 
-# Reserve a stack for the initial thread.
-.section .bss
+.section .data
+# This tables :
+# identity maps
+#   - The first kernel page
+#   - The first Mib
+# Maps the 2 Mib kernel from 1Mib to 3Gib+1022Mib
 
-# Global variables
-.global stack_bottom
-.global stack_top
-.global debug_stack_bottom
-.global debug_stack_top
+.set LOADER_SIZE,          0x00100000
+.set LOADER_PAGE_NUMBER,   (LOADER_SIZE >> 12)
+.set LOADER_DIR_NUMBER,    (LOADER_PAGE_NUMBER >> 10)
 
-.align 16
-stack_bottom:
-.skip 16384 # 16 KiB
-stack_top:
+.set KERNEL_VIRTUAL_BASE,  0xFEFFFFFF
+.set KERNEL_VIRTUAL_PAGE,  (KERNEL_VIRTUAL_BASE >> 12)
+.set KERNEL_VIRTUAL_DIR,   (KERNEL_VIRTUAL_PAGE >> 10)
 
-# Reserve a stack for a second kernel thread, for debuging purpose for the
-# moment.
-.align 16
-debug_stack_bottom:
-.skip 16384
-debug_stack_top:
+.set KERNEL_PHYSICAL_BASE, 0x00100000
+.set KERNEL_PHYSICAL_PAGE, (KERNEL_PHYSICAL_BASE >> 12)
+.set KERNEL_PHYSICAL_DIR,  (KERNEL_PHYSICAL_PAGE >> 10)
+
+.set KERNEL_SIZE,          0x01000000
+.set KERNEL_PAGE_NUMBER,   (KERNEL_SIZE        >> 12)
+.set KERNEL_DIR_NUMBER,    (KERNEL_PAGE_NUMBER >> 10)
+
+.set TOTAL_PAGE_NUMBER,    0x00100000
+.set TOTAL_DIR_NUMBER,     (TOTAL_PAGE_NUMBER >> 10)
+
+.macro define_page n
+  .long ((\n << 12) + 0x83)
+.endm
+.macro define_empty_page
+  .long 0
+.endm
+.macro define_accessible_directory n
+  .long ((\n << 12) + page_tables + 0x83)
+.endm
+.macro define_empty_directory
+  .long 0
+.endm
+
+.align 0x00001000
+
+# Generated file see paging_tables.generator
+#include "paging_tables.data"
+
+# Defining a stack
+.global _kernel_stack
+.set _kernel_stack, (KERNEL_VIRTUAL_BASE - 1)
 
 # The kernel entry point.
 .section .text
+
 .global _start
 .type _start, @function
 
-_start:
-	movl $stack_top, esp
+.set _start, (start - KERNEL_VIRTUAL_BASE + KERNEL_PHYSICAL_BASE)
+
+start:
+  # Setting paging
+  mov (directory_table - KERNEL_VIRTUAL_BASE), ecx
+  mov ecx, cr3
+  mov cr4, ecx
+  and 0x00000010, ecx       # Disable big pages
+  mov ecx, cr4
+  mov cr0, ecx
+  or ecx, 0x80000000        # Enable pages
+  mov ecx, cr0
+  mov $start_upper, ecx
+  jmp *ecx
+
+start_upper:
+  # Unmap the first page.
+  movl $0x0, (page_tables + KERNEL_PHYSICAL_PAGE)
 
 	# Call the global constructors.
 	call _init
@@ -53,4 +97,3 @@ _start:
 	# Hang if kernel_main unexpectedly returns.
 	cli
   hlt
-.size _start, . - _start

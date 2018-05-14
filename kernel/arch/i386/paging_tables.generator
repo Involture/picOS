@@ -1,0 +1,78 @@
+#!/bin/bash
+
+# Constants
+
+let "LOADER_SIZE          = 0x00100000"
+let "LOADER_PAGE_NUMBER   = LOADER_SIZE        >> 12"
+let "LOADER_DIR_NUMBER    = LOADER_PAGE_NUMBER >> 12"
+
+
+let "KERNEL_VIRTUAL_BASE  = 0xFFEFFFFF"
+let "KERNEL_VIRTUAL_PAGE  = KERNEL_VIRTUAL_BASE >> 12"
+let "KERNEL_VIRTUAL_DIR   = KERNEL_VIRTUAL_PAGE >> 10"
+
+let "KERNEL_PHYSICAL_BASE = 0x00100000"
+let "KERNEL_PHYSICAL_PAGE = KERNEL_PHYSICAL_BASE >> 12"
+let "KERNEL_PHYSICAL_DIR  = KERNEL_PHYSICAL_BASE >> 10"
+
+let "KERNEL_SIZE          = 0x01000000"
+let "KERNEL_PAGE_NUMBER   = KERNEL_SIZE         >> 12"
+let "KERNEL_DIR_NUMBER    = KERNEL_PAGE_NUMBER  >> 10"
+
+let "TOTAL_PAGE_NUMBER    = 0x00100000"
+let "TOTAL_DIR_NUMBER     = TOTAL_PAGE_NUMBER >> 10"
+
+# Creating file
+
+cd ./arch/i386
+rm paging_tables.data
+touch paging_tables.data
+
+# Directories
+
+echo "directory_table :" >> paging_tables.data
+
+for i in $( seq 0 $LOADER_DIR_NUMBER )
+do
+  echo "  define_accessible_directory $i" >> paging_tables.data
+done
+
+let "EMPTY_DIR_NUMBER = TOTAL_DIR_NUMBER - KERNEL_DIR_NUMBER -\
+     LOADER_DIR_NUMBER - 2"
+
+  echo "  .rept $EMPTY_DIR_NUMBER " >> paging_tables.data 
+  echo "  define_empty_directory" >> paging_tables.data
+  echo "  .endr" >> paging_tables.data
+
+let "UPPER_DIR_NUMBER = KERNEL_DIR_NUMBER + 1"
+
+for j in $( seq 0 $((UPPER_DIR_NUMBER - 1)))
+do
+  let "DIR_ADDR = TOTAL_DIR_NUMBER - UPPER_DIR_NUMBER + $j"
+  echo "  define_accessible_directory $DIR_ADDR" >> paging_tables.data
+done
+
+# Pages
+
+echo "page_tables :" >> paging_tables.data
+
+for i in $( seq 0 $LOADER_PAGE_NUMBER )
+do
+  echo "  define_page $i" >> paging_tables.data
+done
+
+  let "EMPTY_PAGE_NUMBER = TOTAL_PAGE_NUMBER -\
+       LOADER_PAGE_NUMBER - 1 -\
+       KERNEL_PAGE_NUMBER - 1"
+  echo "  .rept $EMPTY_PAGE_NUMBER" >> paging_tables.data 
+  echo "  define_empty_page" >> paging_tables.data
+  echo "  .endr" >> paging_tables.data
+
+let "STACK_PAGE = LOADER_PAGE_NUMBER + KERNEL_PAGE_NUMBER"
+echo "  define_page $STACK_PAGE" >> paging_tables.data
+
+for i in $( seq 0 $((KERNEL_PAGE_NUMBER - 1)) )
+do
+  let "DIR_ADDR = LOADER_PAGE_NUMBER + i"
+  echo "  define_page $DIR_ADDR" >> paging_tables.data
+done

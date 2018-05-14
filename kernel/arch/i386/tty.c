@@ -7,11 +7,6 @@
 
 #include "vga.h"
 
-const size_t VGA_WIDTH = 80;
-const size_t VGA_HEIGHT = 25;
-const size_t VGA_SIZE = 80 * 25;
-uint16_t* const term_buffer = (uint16_t*) 0xB8000;
-
 static unsigned char empty_char = 0x00;
 
 

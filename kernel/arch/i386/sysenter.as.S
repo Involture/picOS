@@ -64,7 +64,7 @@ sysenter_init :
   # Setting the kernel stack.
   mov $0x175, ecx
   rdmsr
-  mov $debug_stack_top, eax
+  mov $_kernel_stack, eax
   wrmsr
 
   ret

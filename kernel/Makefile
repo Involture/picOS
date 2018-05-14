@@ -54,7 +54,7 @@ $(ARCHDIR)/crtn.o \
 
 all: picOS.kernel
 
-picOS.kernel: $(OBJS) $(ARCHDIR)/linker.ld
+picOS.kernel: ./arch/i386/paging_tables.data $(OBJS) $(ARCHDIR)/linker.ld
 	$(CC) -T $(ARCHDIR)/linker.ld -o $@ $(CFLAGS) $(LINK_LIST)
 	grub-file --is-x86-multiboot picOS.kernel
 
@@ -67,9 +67,13 @@ $(ARCHDIR)/crtbegin.o $(ARCHDIR)/crtend.o:
 .S.o:
 	$(CC) -MD -c $< -o $@ $(CFLAGS) $(CPPFLAGS)
 
+./arch/i386/paging_tables.data : ./arch/i386/paging_tables.generator
+	./arch/i386/paging_tables.generator
+
 clean:
 	rm -f picOS.kernel
 	rm -f picOS.sym
+	rm -f ./arch/i386/paging_tables.data
 	rm -f $(OBJS) *.o */*.o */*/*.o
 	rm -f $(OBJS:.o=.d) *.d */*.d */*/*.d
 

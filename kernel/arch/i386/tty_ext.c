@@ -9,18 +9,18 @@
 
 #include "vga.h"
 
-static unsigned char empty_char = 0x00;
+#define empty_char ((unsigned char) 0x00)
 
-static const size_t HISTORY_LINES = 50 * 25;
-static const size_t HISTORY_SIZE = 50 * 25 * 80;
-static const int16_t MAX_SCREEN_OFS = 49 * 25;
-static const int16_t MIN_SCREEN_OFS = -49;
+#define HISTORY_LINES ((size_t) (50 * 25))
+#define HISTORY_SIZE ((size_t) (50 * 25 * 80))
+#define MAX_SCREEN_OFS ((int16_t) (49 * 25))
+#define MIN_SCREEN_OFS ((int16_t) (-49))
 
 static size_t term_column;
 static uint8_t term_color;
 static int16_t screen_ofs;
 
-static uint16_t history[50 * 25 * 80];
+static uint16_t history[HISTORY_SIZE];
 
 /* Cyclique history vector internal management*/
 
@@ -49,7 +49,7 @@ static void get_screen(uint16_t* destbuf, int16_t ofs) {
   size_t nlines_to_copy =
     (ofs > 0) ? VGA_HEIGHT : (VGA_HEIGHT + ofs);
   size_t start_pos = history_line_pos;
-  if (ofs + VGA_HEIGHT - 1 > history_line_pos)
+  if ((size_t) (ofs + VGA_HEIGHT - 1) > history_line_pos)
     start_pos += HISTORY_LINES;
   start_pos -= ofs + VGA_HEIGHT - 1;
   lines_left = HISTORY_LINES - start_pos - 1;
@@ -109,7 +109,7 @@ void tty_ext_initialize(void) {
 void tty_ext_go_up(size_t ofs) {
   int8_t new_screen_ofs = screen_ofs + (int8_t) ofs;
   screen_ofs = 
-    (new_screen_ofs < MAX_SCREEN_OFS) ? new_screen_ofs : MAX_SCREEN_OFS;
+    (((int16_t) new_screen_ofs) < MAX_SCREEN_OFS) ? new_screen_ofs : MAX_SCREEN_OFS;
   retreive_history(); 
 }
 
