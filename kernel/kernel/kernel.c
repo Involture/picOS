@@ -37,7 +37,7 @@ void kernel_init(void) {
   // kernel/arch/i386/ps2_ctrl.c
   ps2_ctrl_init();
   sysenter_init();
-  pit_init();
+  // pit_init();
 }
 
 void kernel_main(struct multiboot_info_t* grub_info) {

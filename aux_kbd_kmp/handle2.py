@@ -112,7 +112,7 @@ while True:
 							for k in p3_content.split(' '):
 								p3_parsed_content.append(k)
 					while len(p3_parsed_content) < 3:
-						p3_parsed_content.append("")
+						p3_parsed_content.append("\\0")
 				else:
 					p3_content += c
 
@@ -139,7 +139,7 @@ while True:
 		r_s2 = format(r_s, '06x').upper()
 
 
-		tree[r_s2] = [p1_caption+" released", r_p2_parsed_content, 0, p0_id, "", "", ""]
+		tree[r_s2] = [p1_caption+" released", r_p2_parsed_content, 0, p0_id, "\\0", "\\0", "\\0"]
 		# done
 
 		p2_parsed_content.reverse()
@@ -246,13 +246,12 @@ add(n+3, "case 0x00:")
 add(n+4, "switch(c) {")
 for i in L3['0000']:
 	add(n+5, "case 0x"+i+":")
-	add(n+6, "last_cmd_name = \""+str(tree["0000"+i][0])+"\";")
+	# add(n+6, "last_cmd_name = \""+str(tree["0000"+i][0])+"\";")
 	add(n+6, "last_cmd_is_pressed = "+str(tree["0000"+i][2])+";")
 	add(n+6, "kc = "+tree["0000"+i][3]+";")
-	add(n+6, "last_cmd_chr1 = \""+str(tree["0000"+i][4])+"\";")
-	add(n+6, "last_cmd_chr2 = \""+str(tree["0000"+i][5])+"\";")
-	add(n+6, "last_cmd_chr3 = \""+str(tree["0000"+i][6])+"\";")
-	# add(n+6, "last_cmd_name = \""+str(tree[i][0])+"\";")
+	add(n+6, "last_cmd_chr1 = \'"+str(tree["0000"+i][4])+"\';")
+	add(n+6, "last_cmd_chr2 = \'"+str(tree["0000"+i][5])+"\';")
+	add(n+6, "last_cmd_chr3 = \'"+str(tree["0000"+i][6])+"\';")
 	add(n+6, "break;")
 add(n+5, "default:")
 add(n+6, "is_cmd = 2;")
@@ -262,13 +261,12 @@ add(n+3, "case 0xE0:")
 add(n+4, "switch(c) {")
 for i in L3['00E0']:
 	add(n+5, "case 0x"+i+":")
-	add(n+6, "last_cmd_name = \""+str(tree["00E0"+i][0])+"\";")
+	# add(n+6, "last_cmd_name = \""+str(tree["00E0"+i][0])+"\";")
 	add(n+6, "last_cmd_is_pressed = "+str(tree["00E0"+i][2])+";")
 	add(n+6, "kc = "+tree["00E0"+i][3]+";")
-	add(n+6, "last_cmd_chr1 = \""+str(tree["00E0"+i][4])+"\";")
-	add(n+6, "last_cmd_chr2 = \""+str(tree["00E0"+i][5])+"\";")
-	add(n+6, "last_cmd_chr3 = \""+str(tree["00E0"+i][6])+"\";")
-	# add(n+6, "last_cmd_name = \""+str(tree[i][0])+"\";")
+	add(n+6, "last_cmd_chr1 = \'"+str(tree["00E0"+i][4])+"\';")
+	add(n+6, "last_cmd_chr2 = \'"+str(tree["00E0"+i][5])+"\';")
+	add(n+6, "last_cmd_chr3 = \'"+str(tree["00E0"+i][6])+"\';")
 	add(n+6, "break;")
 add(n+5, "default:")
 add(n+6, "is_cmd = 3;")
@@ -278,13 +276,12 @@ add(n+3, "case 0xF0:")
 add(n+4, "switch(c) {")
 for i in L3['00F0']:
 	add(n+5, "case 0x"+i+":")
-	add(n+6, "last_cmd_name = \""+str(tree["00F0"+i][0])+"\";")
+	# add(n+6, "last_cmd_name = \""+str(tree["00F0"+i][0])+"\";")
 	add(n+6, "last_cmd_is_pressed = "+str(tree["00F0"+i][2])+";")
 	add(n+6, "kc = "+tree["00F0"+i][3]+";")
-	add(n+6, "last_cmd_chr1 = \""+str(tree["00F0"+i][4])+"\";")
-	add(n+6, "last_cmd_chr2 = \""+str(tree["00F0"+i][5])+"\";")
-	add(n+6, "last_cmd_chr3 = \""+str(tree["00F0"+i][6])+"\";")
-	# add(n+6, "last_cmd_name = \""+str(tree[i][0])+"\";")
+	add(n+6, "last_cmd_chr1 = \'"+str(tree["00F0"+i][4])+"\';")
+	add(n+6, "last_cmd_chr2 = \'"+str(tree["00F0"+i][5])+"\';")
+	add(n+6, "last_cmd_chr3 = \'"+str(tree["00F0"+i][6])+"\';")
 	add(n+6, "break;")
 add(n+5, "default:")
 add(n+6, "is_cmd = 4;")
@@ -324,13 +321,12 @@ add(n+3, "case 0xF0:")
 add(n+4, "switch(c) {")
 for i in L3['E0F0']:
 	add(n+5, "case 0x"+i+":")
-	add(n+6, "last_cmd_name = \""+str(tree["E0F0"+i][0])+"\";")
+	# add(n+6, "last_cmd_name = \""+str(tree["E0F0"+i][0])+"\";")
 	add(n+6, "last_cmd_is_pressed = "+str(tree["E0F0"+i][2])+";")
 	add(n+6, "kc = "+tree["E0F0"+i][3]+";")
-	add(n+6, "last_cmd_chr1 = \""+str(tree["E0F0"+i][4])+"\";")
-	add(n+6, "last_cmd_chr2 = \""+str(tree["E0F0"+i][5])+"\";")
-	add(n+6, "last_cmd_chr3 = \""+str(tree["E0F0"+i][6])+"\";")
-	# add(n+6, "last_cmd_name = \""+str(tree[i][0])+"\";")
+	add(n+6, "last_cmd_chr1 = \'"+str(tree["E0F0"+i][4])+"\';")
+	add(n+6, "last_cmd_chr2 = \'"+str(tree["E0F0"+i][5])+"\';")
+	add(n+6, "last_cmd_chr3 = \'"+str(tree["E0F0"+i][6])+"\';")
 	add(n+6, "break;")
 add(n+4, "}")
 add(n+4, "break;")
@@ -341,22 +337,6 @@ add(n+2, "break;")
 add(n+1, "default:")
 add(n+2, "is_cmd = 9;")
 add(n, "}")
-
-
-
-
-# final_str = ""
-# final_str += "switch(s) {\n"
-# for i in sorted(tree.items()):
-# 	print(i)
-# 	final_str += "  case "+str(i[0])+":\n"
-# 	final_str += "  last_cmd_name = \""+str(i[1][0])+"\";\n"
-# 	final_str += "  last_cmd_is_pressed = "+str(i[1][2])+";\n"
-# 	# final_str += "last_cmd_effect = "+i[1][1]+";\n"
-# 	final_str += "  break;\n"
-# final_str += "  default:\n"
-# final_str += "  is_cmd = 0;\n"
-# final_str += "}\n"
 
 c_file = open("gc.c", "w")
 c_file.write(final_str)
