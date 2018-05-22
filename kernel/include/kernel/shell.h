@@ -64,6 +64,8 @@ void shell_kwds_array_append_misc(void) {
 	shell_kwds_array_append("time");
 	shell_kwds_array_append("touch");
 	shell_kwds_array_append("true");
+	
+	shell_kwds_array_append("mkdir");
 }
 
 void shell_kwds_array_append_filesystem(void) {
@@ -75,7 +77,6 @@ void shell_kwds_array_append_filesystem(void) {
 	// shell_kwds_array_append("file");
 	// shell_kwds_array_append("find");
 	shell_kwds_array_append("ls");
-	shell_kwds_array_append("mkdir");
 	shell_kwds_array_append("mv");
 	shell_kwds_array_append("pwd");
 	shell_kwds_array_append("rm");

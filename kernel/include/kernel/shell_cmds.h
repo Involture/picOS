@@ -7,6 +7,8 @@
 #include <stdbool.h>
 #include <string.h>
 
+#include <kernel/filesystem.h>
+
 // declaration of functions corresponding to shell commands
 int cmd_echo (char* a) {
 	printf("%s\n", a);
@@ -19,17 +21,19 @@ int cmd_false (char* a) {
 int cmd_true (char* a) {
 	return 0;
 }
-int cmd_dirname (char* a) {
-	// size_t len = strlen(a);
-	// char b[len] = {0};
-	// size_t i;
-	// bool c = false;
-	// for (i = 0; i < len; ++i)
-	// {
-	// 	/* code */
-	// }
+int cmd_mkdir (char* a) {
+	uint16_t b = filesystem_new_file(a, true);
 
-	// printf("%s\n", b);
+	uint8_t c = 42;
+	filesystem_write_file_byte(b, c, true, 0);
+	uint8_t d;
+	d = filesystem_read_file_byte(b, 0);
+
+	if (d == c) {
+		printf("hell yeah\n");
+	}
+
+
 	return 0;
 }
 
@@ -41,7 +45,7 @@ static struct {
 	{ "echo", cmd_echo },
 	{ "false", cmd_false },
 	{ "true", cmd_true },
-	{ "dirname", cmd_dirname }
+	{ "mkdir", cmd_mkdir }
 };
 
 #endif
