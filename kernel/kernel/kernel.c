@@ -19,6 +19,7 @@
 
 void kernel_init(void) {
   tty_ext_initialize();
+  puts("OMFG paging");
 
   dt_init_gdt();
   //dt_print_gdt();

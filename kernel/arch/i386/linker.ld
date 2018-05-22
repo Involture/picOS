@@ -1,43 +1,77 @@
-/* The bootloader will look at this image and start execution at the symbol
-   designated at the entry point. */
-ENTRY(_start)
+ENTRY(lower_start)
 
-/* Tell where the various sections of the object files will be put in the final
-   kernel image. */
+LOADER_SIZE           = 0x00100000;
+LOADER_PAGE_NUMBER    = ((LOADER_SIZE  - 1) >> 12) + 1;
+LOADER_DIR_NUMBER     = ((LOADER_PAGE_NUMBER - 1) >> 10) + 1;
+
+LOWER_PHYSICAL_BASE   = 0x00100000;
+LOWER_PHYSICAL_PAGE   = LOWER_PHYSICAL_BASE >> 12;
+LOWER_PHYSICAL_DIR    = LOWER_PHYSICAL_PAGE >> 10;
+
+UPPER_VIRTUAL_BASE    = 0xFF000000;
+UPPER_VIRTUAL_PAGE    = UPPER_VIRTUAL_BASE >> 12;
+UPPER_VIRTUAL_DIR     = UPPER_VIRTUAL_PAGE >> 10;
+KERNEL_STACK_TOP      = UPPER_VIRTUAL_BASE;
+
+UPPER_SIZE            = 0x01000000;
+UPPER_PAGE_NUMBER     = ((UPPER_SIZE - 1) >> 12) + 1;
+UPPER_DIR_NUMBER      = ((UPPER_PAGE_NUMBER - 1) >> 10) + 1;
+
+TOTAL_PAGE_NUMBER     = 0x00100000;
+TOTAL_DIR_NUMBER      = ((TOTAL_PAGE_NUMBER - 1) >> 10) + 1;
+
 SECTIONS
 {
-	/* Begin putting sections at 1 MiB, a conventional place for kernels to be
-	   loaded at by the bootloader. */
-	. = 0xFEFFFFFF;
+	. = LOADER_SIZE;
 
-	/* First put the multiboot header, as it is required to be put very early
-	   early in the image or the bootloader won't recognize the file format.
-	   Next we'll put the .text section. */
-	.text BLOCK(4K) : ALIGN(4K)
-	{
+  .lower BLOCK(4K) : ALIGN(4K)
+  {
 		*(.multiboot)
+    *(.lower)
+  }
+
+  UPPER_PHYSICAL_BASE = ALIGN(4K);
+  UPPER_PHYSICAL_PAGE = UPPER_PHYSICAL_BASE >> 12;
+  UPPER_PHYSICAL_DIR  = UPPER_PHYSICAL_PAGE >> 10;
+
+  LOWER_SIZE        = UPPER_PHYSICAL_BASE - LOADER_SIZE;
+  LOWER_PAGE_NUMBER = ((LOWER_SIZE - 1) >> 12) + 1;
+  LOWER_DIR_NUMBER  = ((LOWER_PAGE_NUMBER - 1) >> 10) + 1;
+
+  UPPER_OFFSET        = UPPER_VIRTUAL_BASE - UPPER_PHYSICAL_BASE;
+  UPPER_PAGE_OFFSET   = UPPER_VIRTUAL_PAGE - UPPER_PHYSICAL_PAGE;
+  UPPER_DIR_OFFSET    = UPPER_VIRTUAL_DIR  - UPPER_PHYSICAL_DIR;
+
+  . = UPPER_VIRTUAL_BASE;
+
+	.text ALIGN(4K) : AT(ADDR(.text) - UPPER_OFFSET)
+	{
 		*(.text)
 	}
 
-	/* Read-only data. */
-	.rodata BLOCK(4K) : ALIGN(4K)
+  DIRECTORY_TABLE = ALIGN(4K);
+  PAGE_TABLE = DIRECTORY_TABLE + 4K;
+  PHYSICAL_DIRECTORY_TABLE = DIRECTORY_TABLE - UPPER_OFFSET;
+  PHYSICAL_PAGE_TABLE = PAGE_TABLE - UPPER_OFFSET;
+
+  .pages ALIGN(4K) : AT(ADDR(.pages) - UPPER_OFFSET)
+  {
+    *(.pages)
+  }
+
+	.rodata ALIGN(4K) : AT(ADDR(.rodata) - UPPER_OFFSET)
 	{
 		*(.rodata)
 	}
 
-	/* Read-write data (initialized) */
-	.data BLOCK(4K) : ALIGN(4K)
+	.data ALIGN(4K) : AT(ADDR(.data) - UPPER_OFFSET)
 	{
 		*(.data)
 	}
 
-	/* Read-write data (uninitialized) and stack */
-	.bss BLOCK(4K) : ALIGN(4K)
-	{
-		*(COMMON)
-		*(.bss)
-	}
+  .bss ALIGN(4K) : AT(ADDR(.data) - UPPER_OFFSET)
+  {
+    *(.bss)
+  }
 
-	/* The compiler may produce other sections, put them in the proper place in
-	   in this file, if you'd like to include them in the final kernel. */
 }

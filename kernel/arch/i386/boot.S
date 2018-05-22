@@ -14,78 +14,150 @@
 .long FLAGS
 .long CHECKSUM
 
-.section .data
-# This tables :
-# identity maps
-#   - The first kernel page
-#   - The first Mib
-# Maps the 2 Mib kernel from 1Mib to 3Gib+1022Mib
+.section .pages , "wa", @nobits
+.skip 0x00404000
 
-.set LOADER_SIZE,          0x00100000
-.set LOADER_PAGE_NUMBER,   (LOADER_SIZE >> 12)
-.set LOADER_DIR_NUMBER,    (LOADER_PAGE_NUMBER >> 10)
+.section .lower , "ax"
 
-.set KERNEL_VIRTUAL_BASE,  0xFEFFFFFF
-.set KERNEL_VIRTUAL_PAGE,  (KERNEL_VIRTUAL_BASE >> 12)
-.set KERNEL_VIRTUAL_DIR,   (KERNEL_VIRTUAL_PAGE >> 10)
+.global lower_start
+.type lower_start, @function
 
-.set KERNEL_PHYSICAL_BASE, 0x00100000
-.set KERNEL_PHYSICAL_PAGE, (KERNEL_PHYSICAL_BASE >> 12)
-.set KERNEL_PHYSICAL_DIR,  (KERNEL_PHYSICAL_PAGE >> 10)
+lower_start:
+  # Setting page tables
+  call paging_init
 
-.set KERNEL_SIZE,          0x01000000
-.set KERNEL_PAGE_NUMBER,   (KERNEL_SIZE        >> 12)
-.set KERNEL_DIR_NUMBER,    (KERNEL_PAGE_NUMBER >> 10)
-
-.set TOTAL_PAGE_NUMBER,    0x00100000
-.set TOTAL_DIR_NUMBER,     (TOTAL_PAGE_NUMBER >> 10)
-
-.macro define_page n
-  .long ((\n << 12) + 0x83)
-.endm
-.macro define_empty_page
-  .long 0
-.endm
-.macro define_accessible_directory n
-  .long ((\n << 12) + page_tables + 0x83)
-.endm
-.macro define_empty_directory
-  .long 0
-.endm
-
-.align 0x00001000
-
-# Generated file see paging_tables.generator
-#include "paging_tables.data"
-
-# Defining a stack
-.global _kernel_stack
-.set _kernel_stack, (KERNEL_VIRTUAL_BASE - 1)
-
-# The kernel entry point.
-.section .text
-
-.global _start
-.type _start, @function
-
-.set _start, (start - KERNEL_VIRTUAL_BASE + KERNEL_PHYSICAL_BASE)
-
-start:
-  # Setting paging
-  mov (directory_table - KERNEL_VIRTUAL_BASE), ecx
+  # Enabling paging
+  mov $PHYSICAL_DIRECTORY_TABLE, ecx
   mov ecx, cr3
   mov cr4, ecx
-  and 0x00000010, ecx       # Disable big pages
+  and $0xFFFFFFEF, ecx       # Disable big pages
   mov ecx, cr4
   mov cr0, ecx
-  or ecx, 0x80000000        # Enable pages
+  or $0x80000000, ecx        # Enable paging
   mov ecx, cr0
-  mov $start_upper, ecx
+  mov $upper_start, ecx
   jmp *ecx
 
-start_upper:
-  # Unmap the first page.
-  movl $0x0, (page_tables + KERNEL_PHYSICAL_PAGE)
+paging_init :
+
+  # Setting the directory table
+
+  xor ecx, ecx
+  mov $LOADER_DIR_NUMBER, eax
+  add $LOWER_DIR_NUMBER, eax
+loop_load_lower_dir :
+  mov ecx, edx
+  call mk_dir_desc
+  inc ecx
+  cmp ecx, eax
+  je end_load_lower_dir
+  jmp loop_load_lower_dir
+end_load_lower_dir :
+
+  mov $UPPER_VIRTUAL_DIR, eax
+  sub $1, eax
+loop_empty_dir :
+  mov ecx, edx
+  call mk_empty_dir
+  inc ecx
+  cmp ecx, eax
+  je end_empty_dir
+  jmp loop_empty_dir
+end_empty_dir :
+
+  mov $LOADER_DIR_NUMBER, edx
+  add $LOWER_DIR_NUMBER, edx
+  call mk_dir_desc
+  inc ecx
+
+  mov $TOTAL_DIR_NUMBER, eax
+loop_upper_dir :
+  mov ecx, edx
+  call mk_dir_desc
+  inc ecx
+  cmp ecx, eax
+  je end_upper_dir 
+  jmp loop_upper_dir
+end_upper_dir :
+
+  # Setting the page table
+
+  xor ecx, ecx
+  mov $LOADER_PAGE_NUMBER, eax
+  add $LOWER_PAGE_NUMBER, eax
+loop_load_lower_page :
+  mov ecx, edx
+  call mk_page_desc
+  inc ecx
+  cmp ecx, eax
+  je end_load_lower_page
+  jmp loop_load_lower_page
+end_load_lower_page :
+
+  mov $UPPER_VIRTUAL_PAGE, eax
+  sub $1, eax
+loop_empty_page :
+  mov ecx, edx
+  call mk_empty_page
+  inc ecx
+  cmp ecx, eax
+  je end_empty_page
+  jmp loop_empty_page
+end_empty_page :
+
+  mov $LOADER_PAGE_NUMBER, edx
+  add $LOWER_PAGE_NUMBER, edx
+  call mk_page_desc
+  inc ecx
+
+  mov $TOTAL_PAGE_NUMBER, eax
+  mov ecx, edx
+  sub $UPPER_PAGE_OFFSET, edx
+loop_upper_page :
+  call mk_page_desc
+  inc edx
+  inc ecx
+  cmp ecx, eax
+  je end_upper_page
+  jmp loop_upper_page
+end_upper_page :
+
+ret
+
+mk_empty_dir :
+  .set permission, 0x00
+  jmp dir_perm_def_end
+mk_dir_desc :
+  .set permission, 0x83
+dir_perm_def_end :
+  mov ecx, edi
+  shl $2, edi
+  mov edx, esi
+  shl $12, esi
+  add $permission, esi
+  add $PHYSICAL_PAGE_TABLE, esi
+  mov esi, PHYSICAL_DIRECTORY_TABLE(edi)
+  ret
+
+mk_empty_page :
+  .set permission, 0x00
+  jmp page_perm_def_end
+mk_page_desc :
+  .set permission, 0x83
+page_perm_def_end :
+  mov ecx, edi
+  shl $2, edi
+  mov edx, esi
+  shl $12, esi
+  add $permission, esi
+  mov esi, PHYSICAL_PAGE_TABLE(edi)
+  ret
+
+.section .text
+
+upper_start:
+  # Enabling stack !
+  mov $KERNEL_STACK_TOP, esp
 
 	# Call the global constructors.
 	call _init

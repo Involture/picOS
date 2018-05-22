@@ -2,25 +2,28 @@
 
 # Constants
 
-let "LOADER_SIZE          = 0x00100000"
-let "LOADER_PAGE_NUMBER   = LOADER_SIZE        >> 12"
-let "LOADER_DIR_NUMBER    = LOADER_PAGE_NUMBER >> 12"
+let "LOADER_SIZE           = 0x00100000"
+let "LOADER_PAGE_NUMBER    = LOADER_SIZE >> 12"
+let "LOADER_DIR_NUMBER     = LOADER_PAGE_NUMBER >> 10"
 
+let "LOWER_PHYSICAL_BASE   = 0x00100000"
+let "LOWER_PHYSICAL_PAGE   = LOWER_PHYSICAL_BASE >> 12"
+let "LOWER_PHYSICAL_DIR    = LOWER_PHYSICAL_PAGE >> 10"
 
-let "KERNEL_VIRTUAL_BASE  = 0xFFEFFFFF"
-let "KERNEL_VIRTUAL_PAGE  = KERNEL_VIRTUAL_BASE >> 12"
-let "KERNEL_VIRTUAL_DIR   = KERNEL_VIRTUAL_PAGE >> 10"
+let "UPPER_VIRTUAL_BASE    = 0xFF000000"
+let "UPPER_VIRTUAL_PAGE    = UPPER_VIRTUAL_BASE >> 12"
+let "UPPER_VIRTUAL_DIR     = UPPER_VIRTUAL_PAGE >> 10"
 
-let "KERNEL_PHYSICAL_BASE = 0x00100000"
-let "KERNEL_PHYSICAL_PAGE = KERNEL_PHYSICAL_BASE >> 12"
-let "KERNEL_PHYSICAL_DIR  = KERNEL_PHYSICAL_BASE >> 10"
+let "UPPER_SIZE            = 0x01000000"
+let "UPPER_PAGE_NUMBER     = UPPER_SIZE >> 12"
+let "UPPER_DIR_NUMBER      = UPPER_SIZE >> 10"
 
-let "KERNEL_SIZE          = 0x01000000"
-let "KERNEL_PAGE_NUMBER   = KERNEL_SIZE         >> 12"
-let "KERNEL_DIR_NUMBER    = KERNEL_PAGE_NUMBER  >> 10"
+let "TOTAL_PAGE_NUMBER     = 0x00100000"
+let "TOTAL_DIR_NUMBER      = TOTAL_PAGE_NUMBER"
 
-let "TOTAL_PAGE_NUMBER    = 0x00100000"
-let "TOTAL_DIR_NUMBER     = TOTAL_PAGE_NUMBER >> 10"
+let "UPPER_PHYSICAL_BASE   = LOWER_PHYSICAL_BASE + 0x00001000" 
+let "UPPER_PHYSICAL_PAGE   = UPPER_PHYSICAL_PAGE >> 12"
+let "UPPER_PHYSICAL_DIR    = UPPER_PHYSICAL_PAGE >> 10"
 
 # Creating file
 
@@ -32,47 +35,35 @@ touch paging_tables.data
 
 echo "directory_table :" >> paging_tables.data
 
-for i in $( seq 0 $LOADER_DIR_NUMBER )
+echo "  define_accessible_directory 0" >> paging_tables.data
+
+echo "  .rept 1018" >> paging_tables.data 
+echo "  define_empty_directory" >> paging_tables.data
+echo "  .endr" >> paging_tables.data
+
+for j in $( seq 1019 1023 )
 do
-  echo "  define_accessible_directory $i" >> paging_tables.data
-done
-
-let "EMPTY_DIR_NUMBER = TOTAL_DIR_NUMBER - KERNEL_DIR_NUMBER -\
-     LOADER_DIR_NUMBER - 2"
-
-  echo "  .rept $EMPTY_DIR_NUMBER " >> paging_tables.data 
-  echo "  define_empty_directory" >> paging_tables.data
-  echo "  .endr" >> paging_tables.data
-
-let "UPPER_DIR_NUMBER = KERNEL_DIR_NUMBER + 1"
-
-for j in $( seq 0 $((UPPER_DIR_NUMBER - 1)))
-do
-  let "DIR_ADDR = TOTAL_DIR_NUMBER - UPPER_DIR_NUMBER + $j"
-  echo "  define_accessible_directory $DIR_ADDR" >> paging_tables.data
+  echo "  define_accessible_directory $j" >> paging_tables.data
 done
 
 # Pages
 
 echo "page_tables :" >> paging_tables.data
 
-for i in $( seq 0 $LOADER_PAGE_NUMBER )
+for i in $( seq 0 256 )
 do
   echo "  define_page $i" >> paging_tables.data
 done
 
-  let "EMPTY_PAGE_NUMBER = TOTAL_PAGE_NUMBER -\
-       LOADER_PAGE_NUMBER - 1 -\
-       KERNEL_PAGE_NUMBER - 1"
-  echo "  .rept $EMPTY_PAGE_NUMBER" >> paging_tables.data 
+  let "EMPTY_PAGES = 767 + 1024 * 1018 + 1023"
+
+  echo "  .rept $EMPTY_PAGES" >> paging_tables.data 
   echo "  define_empty_page" >> paging_tables.data
   echo "  .endr" >> paging_tables.data
 
-let "STACK_PAGE = LOADER_PAGE_NUMBER + KERNEL_PAGE_NUMBER"
-echo "  define_page $STACK_PAGE" >> paging_tables.data
+echo "  define_page 257" >> paging_tables.data
 
-for i in $( seq 0 $((KERNEL_PAGE_NUMBER - 1)) )
+for i in $( seq 258 4353)
 do
-  let "DIR_ADDR = LOADER_PAGE_NUMBER + i"
-  echo "  define_page $DIR_ADDR" >> paging_tables.data
+  echo "  define_page $i" >> paging_tables.data
 done
