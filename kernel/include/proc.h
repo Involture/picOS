@@ -55,6 +55,9 @@ struct proc_t {
   union proc_regs_t regs;
   pid_t parent;
   pq_t pending;
+  uint32_t dir_code;
+  uint32_t dir_stack;
+  uint32_t dir_heap;
 };
 
 table_t proc_table;

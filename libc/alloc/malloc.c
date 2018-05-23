@@ -191,10 +191,10 @@ void* malloc(size_t size) {
     uint32_t* curr_block = fst_free_block;
     // Preparing for the loop
     bool* error = 0;
-    bool last_free = (*(curr_block + 1) == curr_block);
+    bool last_free = (*(curr_block + 1) == (uint32_t) curr_block);
     // Then we loop
     while (! error) {
-      uint32_t* next = *(curr_block + 1);
+      uint32_t* next = (uint32_t*) *(curr_block + 1);
       // We check whether the current block is large enough
       // We determine of which type the header is
       struct head_t* header = (struct head_t*) curr_block;
@@ -210,7 +210,7 @@ void* malloc(size_t size) {
           return (allocate_h2(header,size,blocksize,last_free,hpstart));
         } else {
           // Size is not enough, we have to move on to the next block
-          if (next == (uint32_t*) hpstart->fst_free) {
+          if (next == (uint32_t*) (get_addr(hpstart->fst_free))) {
             // We have to request another page and adapt the last block
             // Then we can just pretend that new big last block is the block
             // we just arrived to. If there was an error, we set 'error' to 1
@@ -228,7 +228,7 @@ void* malloc(size_t size) {
           return (allocate_h3(header,last_free,hpstart));
         } else {
           // Size is not enough, we have to move on to the next block
-          if (next == (uint32_t*) hpstart->fst_free) {
+          if (next == (uint32_t*) (get_addr (hpstart->fst_free))) {
             // We have to request another page and adapt the last block
             // Then we can just pretend that new big last block is the block
             // we just arrived to. If there was an error, we set 'error' to 1

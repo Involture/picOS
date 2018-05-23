@@ -15,6 +15,10 @@ void interrupt_master_isr(struct dump_as_reg_dump rdump, uint32_t interrupt,
                           struct dump_as_interrupt_dump idump) {
   //printf("interruption : %w\n", &interrupt, 4);
 
+  if (interrupt == 13) puts("General Proctection Fault");
+  
+  if (interrupt == 14) puts("Page Fault");
+  
   if (interrupt == 32) timer_isr();
 
   if (interrupt == 33) {
