@@ -87,7 +87,28 @@ Martin Janin
 
 \subsection{Gestion de la mémoire}
 
-Pour l'instant, une structure de pagination est implémentée.
+\subsubsection{Pagination}
+
+À l'heure actuelle, la pagination est presque fonctionnelle. Les structures
+nécessaires à son implémentation sont présente, et ne manquent plus que les
+fonctions pour manipuler les pages.
+
+Dans notre version de la pagination, nous nous sommes placé dans le cadre
+suivant~:
+\begin{itemize}
+  \item Les processus ont un tas et une pile de taille fixée (à mille pages soit
+    4 kio), considérée comme sufisamment grande pour qu'ils n'aient pas besoin
+    de demander plus de place
+  \item Les processus sont placés les uns à la suite des autres dans la mémoire.
+\end{itemize}
+
+\subsubsection{Allocation mémoire}
+
+L'allocation mémoire est une adaptation de la version la plus performante
+présentée dans le cours \emph{Langages de programmation et compilation} de
+Jean-Christophe Filliâtre. Elle se base sur la découpe de la mémoire en blocs de
+quatre octets et sur une utilisation intelligente de l'espace contenu dans les
+blocs libres.
 
 \subsection{Interface utilisateur-machine}
 
