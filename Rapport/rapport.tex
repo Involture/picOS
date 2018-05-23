@@ -1,0 +1,98 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[francais]{babel}
+\usepackage{hyperref}
+
+\title{\texttt{picOS} : Petite Implémentation en C d'un OS}
+\author{Martin Janin, Antonin Reitz, Jules Saget}
+\date{2018}
+
+\begin{document}
+
+\maketitle
+
+\section{Vue d'ensemble}
+
+\subsection{Objectifs et spécifications}
+
+\texttt{picOS} est un micronoyau pour i386-elf. Dans un premier temps, nous
+voulions coder un système d'exploitation pour architecture x86\_64, avec
+pagination et système de fichier. Au final, nous avons un ordonanceur une
+interface utilisateur-machine avancée, et un début de pagination.
+
+Toutes les fonctionnalités de notre OS ont été intégralement codées par nos
+soins, à l'exception notable du chargeur d'amorçage. Nous nous sommes beaucoup
+inspirés des articles d'OSDev (\url{osdev.org}), mais tout notre code est
+original.
+
+\subsection{Architecture générale}
+
+L'architecture est inspirée du \emph{Meaty Skeleton} d'OSDev. Elle se divise en
+trois grandes parties~:
+\begin{itemize}
+  \item Le noyau : le dossier \texttt{kernel} contient toutes les fonctions
+    relatives au noyau. Cela comporte notamment tout ce qui est dépendant du
+    processeur (éditeur de lien, périphérique clavier, \ldots) ainsi que toutes
+    les sources permettant de compiler le noyau.
+  \item La bibliothèque C : le dossier \texttt{libc} contient toutes les
+    fonctions relatives au noyau. Cela comporte l'interface pour les appels
+    système, l'ordonanceur, les structures de données et l'allocation mémoire.
+  \item Les scripts : le dossier \texttt{scripts} contiens tous les scripts
+    nécessaires à la compilation. C'est ce qui relie les différentes parties
+    entre pour construire l'image disque.
+\end{itemize}
+
+\section{Aspects techniques}
+
+\subsection{Utilitaires externes}
+
+Pour nous faciliter la tâche, nous avons eu recours à différents utilitaires
+externes. Outre les outils standards (comme l'utilisation de Git ou de
+Makefiles), nous nous sommes servis du chargeur d'amorçage GRUB et du simulateur
+de machine virtuelle Qemu.
+
+\subsubsection{Git}
+
+Tout notre code est accessible sur le dépôt Git situé à l'adresse suivante :
+\url{https://github.com/Involture/picOS}. La branche Master contient tout le
+code compilable (à quelques erreurs près). La branche Testing contient le code
+codé mais pas stable, ou pour lequel il manque des fonctions non codées. Enfin,
+la branche Rendu contient la version du projet présentée à la soutenance.
+
+\subsubsection{GCC et compilation croisée}
+
+Notre système d'exploitation étant codé en C, nous avons utilisé GCC pour le
+compiler. Néanmoins, puisque nous compilons pour une autre machine que celles
+sur lesquelles nous travaillons (notre système d'exploitation est conçu pour
+architecture i386-elf), nous avons dû reconfigurer GCC pour qu'elle fasse de la
+compilation croisée.
+
+Les fichiers binaires de cette compilation de GCC sont en annexe du projet, et
+ils sont en théorie censés convenir pour les machines tournant sous Unix. Si
+cela ne fonctionne pas, il vous suffit de vous-même recompiler GCC pour
+i386-elf.
+
+\subsubsection{Makefiles}
+
+Martin Janin
+
+\subsubsection{GRUB}
+
+Martin Janin
+
+\subsection{Ordonancement}
+
+Martin Janin
+
+\subsection{Gestion de la mémoire}
+
+Pour l'instant, une structure de pagination est implémentée.
+
+\subsection{Interface utilisateur-machine}
+
+Antonin Reitz
+
+\section{Perspectives d'amélioration}
+
+\end{document}
