@@ -29,7 +29,7 @@ void kernel_init(void) {
 
   cpuid_set();
   // step 0
-  printf("cpuid : %w\n", cpuid, 4);
+  // printf("cpuid : %w\n", cpuid, 4);
 
   pic_remap(32, 40, 0xFFFC);
   interrupt_enable();
@@ -48,7 +48,8 @@ void kernel_main(struct multiboot_info_t* grub_info) {
   multiboot_info = *grub_info;
   kernel_init();
   puts("Init sequence ended");
-  printf("  high_memory : %w\n", &(multiboot_info.mem_upper), 4);
+  puts("Press CtrlL + ShiftL + S to enter shell mode");
+  // printf("  high_memory : %w\n", &(multiboot_info.mem_upper), 4);
 
   // ok until now
   while(1);

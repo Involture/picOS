@@ -4,7 +4,7 @@
 #include <stdbool.h>
 
 static void perror(void) {
-  printf("PS/2 controller init error : ");
+  // printf("PS/2 controller init error : ");
 };
 
 static int timer;
@@ -62,14 +62,14 @@ static char inb_block_data(void) {
 
 void ps2_ctrl_init(void) {
   ps2_ctrl_timeout = 100000;
-  puts("Disabling ports");
+  // puts("Disabling ports");
   outb_block_cmd(PS2_CTRL_CMD_DSBL_P1); // Dsbl ports so they dont interfere
   outb_block_cmd(PS2_CTRL_CMD_DSBL_P2); // with initialization
 
   inb_data();                           // Flush the output buffer
-  printf("Output buffer status : %x\n", get_status() & PS2_CTRL_OUTPUT_BUF);
+  // printf("Output buffer status : %x\n", get_status() & PS2_CTRL_OUTPUT_BUF);
 
-  puts("Disabling interrupts");
+  // puts("Disabling interrupts");
   outb_block_cmd(PS2_CTRL_CMD_GET_CONF);// Get the configuration
   char conf = inb_block_data();         // Change configuration
   conf &= !PS2_CTRL_CONF_I1;            // Disable interrupts so nothing
@@ -78,7 +78,7 @@ void ps2_ctrl_init(void) {
   outb_block_cmd(PS2_CTRL_CMD_WRITE_CONF);
   outb_block_data(conf);
 
-  puts("Running global tests");
+  // puts("Running global tests");
   outb_block_cmd(PS2_CTRL_CMD_TEST);    // Run global test
   char response = inb_block_data();
   if (!(response == 0x55)) {
@@ -87,35 +87,35 @@ void ps2_ctrl_init(void) {
     printf("respons %x\n", response);
   };
 
-  puts("Checking if port 2 is available");
+  // puts("Checking if port 2 is available");
   outb_block_cmd(PS2_CTRL_CMD_ENBL_P2); // Enable P2 to see if its available
   outb_block_cmd(PS2_CTRL_CMD_GET_CONF);// Get config again
   conf = inb_block_data();
   if (conf & PS2_CTRL_CONF_CLK2) {      // If clock of P2 is disable, second
                                         // port is not available
     perror();
-    puts("Port 2 unavailable");
+    // puts("Port 2 unavailable");
   };
   outb_block_cmd(PS2_CTRL_CMD_DSBL_P2); // Disable P2 again
 
-  puts("Testing first port");
+  // puts("Testing first port");
   outb_block_cmd(PS2_CTRL_CMD_TEST_P1); // Test the first port
   if (!inb_block_data()) {
     perror();
-    puts("Port 1 test failed");
+    // puts("Port 1 test failed");
   }
-  puts("Testing second port");
+  // puts("Testing second port");
   outb_block_cmd(PS2_CTRL_CMD_TEST_P2); // Test the second port
   if (!inb_block_data()) {
     perror();
-    puts("Port 2 test failed");
+    // puts("Port 2 test failed");
   }
 
-  puts("Enabling ports");
+  // puts("Enabling ports");
   outb_block_cmd(PS2_CTRL_CMD_ENBL_P1); // Enable ports
   outb_block_cmd(PS2_CTRL_CMD_ENBL_P2);
 
-  puts("Enabling interrupts");
+  // puts("Enabling interrupts");
   outb_block_cmd(PS2_CTRL_CMD_GET_CONF);// Set interrupts and translation again
   conf = (inb_block_data());
   conf |= PS2_CTRL_CONF_I1;

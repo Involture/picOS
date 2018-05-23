@@ -66,6 +66,7 @@ int cmd_cd (char* a) {
 
 int cmd_kdp (char* a) {
 	filesystem_change_dir_for_parent();
+	return 0;
 }
 
 int cmd_ls (char *a) {

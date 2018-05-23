@@ -54,9 +54,9 @@ void filesystem_init(void) {
 
 	filesystem_current_dir_inode = a;
 	// filesystem_write_file_byte(a, 2, true, 0);
-	p162(filesystem_current_dir_inode);
-	printf("\n");
-	p162(filesystem_inodes_pos);
+	// p162(filesystem_current_dir_inode);
+	// printf("\n");
+	// p162(filesystem_inodes_pos);
 };
 
 void filesystem_dir_add_element(uint16_t iid, uint16_t filename_iid) {
@@ -74,7 +74,7 @@ void filesystem_dir_add_element(uint16_t iid, uint16_t filename_iid) {
 		uint8_t c2 = filesystem_read_file_byte(iid, 1);
 		
 		filesystem_read_file(iid);
-		printf("//");p162(c1 * 256 + c2);printf("//");
+		// printf("//");p162(c1 * 256 + c2);printf("//");
 		filesystem_close_file(iid);
 		// ?
 	} else {
@@ -177,9 +177,7 @@ uint16_t filesystem_new_file(char* filename, bool is_a_dir) {
 		.i_addr_b = NULL
 	};
 	filesystem_inodes[iid] = new_inode;
-	printf("fuck");
 	filesystem_dir_add_element(filesystem_current_dir_inode, iid);
-	printf("lourd");
 
 	filesystem_inodes_pos += 1;
 	// p162(filesystem_inodes_pos);
@@ -246,13 +244,13 @@ void filesystem_write_file_byte(uint16_t iid, uint8_t data, bool eof, uint32_t o
 		}
 
 		file.i_addr_a[file.i_size] = data;
-		printf("</%x\\>\n", file.i_addr_a[file.i_size]);
+		// printf("</%x\\>\n", file.i_addr_a[file.i_size]);
 		file.i_size += 1;
 		filesystem_inodes[iid] = file;
 
 		struct inode temp_file = filesystem_inodes[iid];
 
-		printf("</%x\\>\n", temp_file.i_addr_a[temp_file.i_size]);
+		// printf("</%x\\>\n", temp_file.i_addr_a[temp_file.i_size]);
 	} else {
 		while (file.i_addr_a + offset > file.i_addr_b) {
 			uint8_t* new_addr_a = malloc(sizeof(uint8_t) * 2 * file.i_size);
@@ -315,13 +313,13 @@ void filesystem_read_file(uint16_t iid) {
 	for (uint32_t i = 0; i < file.i_size; ++i)
 	{
 		// printf("%x", i);
-		printf("%x| ", filesystem_read_file_byte(iid, i));
+		printf("%x ", filesystem_read_file_byte(iid, i));
 	}
 }
 
 void fs_debug(void) {
 	struct inode temp_inode;
-	p162(filesystem_current_dir_inode); printf("\n");
+	// p162(filesystem_current_dir_inode); printf("\n");
 	for (int i = 0; i < 5; ++i)
 	{
 		temp_inode = filesystem_inodes[i];
