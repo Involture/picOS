@@ -24,7 +24,7 @@ export BOOTDIR=/boot
 export LIBDIR=$EXEC_PREFIX/lib
 export INCLUDEDIR=$PREFIX/include
 
-if [ $gdb ]; then 
+if [ $gdb ]; then
   export CFLAGS='-O0'
 else
   export CFLAGS='-Ofast'
