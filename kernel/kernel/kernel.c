@@ -2,6 +2,7 @@
 #include <stdint.h>
 #include <kernel/multiboot.h>
 #include <kernel/tty_ext.h>
+#include <kernel/dtconf.h>
 #include <kernel/dt.h>
 #include <kernel/cpuid.h>
 #include <kernel/pic.h>
@@ -16,10 +17,14 @@
 #include <proc.h>
 #include <syscalls/proc.h>
 #include <kernel/pit.h>
+#include <kernel/link_var.h>
+#include <kernel/paging.h>
+
+uint32_t testuuuz = 0xCAFEBABE;
 
 void kernel_init(void) {
+  paging_init();
   tty_ext_initialize();
-  puts("OMFG paging");
 
   dt_init_gdt();
   //dt_print_gdt();
@@ -45,7 +50,6 @@ void kernel_main(struct multiboot_info_t* grub_info) {
   multiboot_info = *grub_info;
   kernel_init();
   puts("Init sequence ended");
-  printf("  high_memory : %w\n", &(multiboot_info.mem_upper), 4);
 
   // ok until now
   while(1);

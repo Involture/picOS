@@ -44,4 +44,6 @@ struct idt_entry {
 extern struct gdt_entry gdt_conf[];
 extern struct idt_entry idt_conf[];
 
+void dtconf_init(void);
+
 #endif
