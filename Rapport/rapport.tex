@@ -83,7 +83,13 @@ Martin Janin
 
 \subsection{Ordonancement}
 
-Martin Janin
+Pour l'ordonancement des processus, nous avons théorisé et commencé à
+implémenter une interface d'ordonnancement non préemptive. L'objectif des appels
+systèmes implmentés est de permettre l'utilisation d'autres ordonnanceurs
+preemptifs, du coté utilisateur. Ainsi, ces ordonnanceurs pourraient etre
+rajouter à la librairie C.
+Une interface spécifique est également prévu avec les pilotes de périphériques
+pour permettre par exemple au processus de configurer des comptes à rebour.
 
 \subsection{Gestion de la mémoire}
 
@@ -115,5 +121,29 @@ blocs libres.
 Antonin Reitz
 
 \section{Perspectives d'amélioration}
+
+\subsection{Ce qu'il faudrait coder à court terme}
+
+Actuellement, l'interface de l'ordanceur n'est pas complétement implémentée et
+est donc non-fonctionnelle. Quelques heures de travail nous manquent pour avoir
+une gestion complète de la mémoire et des processus.
+
+Également, un bug non résolu demeure dans le chargement en mémoire de la section
+\texttt{.data} du noyau par GRUB. Ce bug doit être résolu pour permettre de
+tester l'ordonanceur et la mémoire.
+
+\subsection{Les fonctionalités à rajouter}
+
+Nous aurions aimé avoir d'un système de fichier non-virtuel. Nous voulions coder
+nos pilotes de disque dur puis implémenter ext2 et éventuellement ext3.
+
+La bibliothèque C (\texttt{libc}) a été à peine entamée. De nombreuses
+structures et fonctions restent à coder pour rendre le noyau pleinement
+fonctionnel et espérer lancer un processus utilisateur.
+
+Lorsque l'espace utilisateur sera disponimbe, il faudra également porter le
+shell et éventuellement les pilotes du côté utilisateur.
+
+\subsection{Les erreurs qu'on ne commettra plus}
 
 \end{document}
