@@ -4,6 +4,13 @@
 #include <stddef.h>
 #include <stdint.h>
 
+/* Conventions on syscalls IDs:
+   0xlmno
+   l  : Domain of syscall (process, memory, ...)
+   m  : Subdomain of syscall
+   no : Syscall number (within subdomain)
+  */
+
 #define SYSCALL_PROC_BIRTH      0x0000
 #define SYSCALL_PROC_BURY       0x0001
 #define SYSCALL_PROC_KILL       0x0002
@@ -16,8 +23,9 @@
 #define SYSCALL_TASK_REPORT     0x0112
 #define SYSCALL_WATCHMEN_READ   0x0200
 #define SYSCALL_WATCHMEN_ALARM  0x0201
+#define SYSCALL_MEMEXT          0x1000
 
-// Now we define the structurs used to pass arguments to the kernel :
+// Now we define the structures used to pass arguments to the kernel :
 
 struct syscall_proc_abandon {
   pid_t child_pid;
