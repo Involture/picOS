@@ -1,4 +1,4 @@
-\documentclass[a4paper,11pt]{article}
+\documentclass[a4paper, 11pt, twoside]{article}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage[francais]{babel}
@@ -16,14 +16,14 @@
 
 \subsection{Objectifs et spécifications}
 
-\texttt{picOS} est un micronoyau pour i386-elf. Dans un premier temps, nous
-voulions coder un système d'exploitation pour architecture x86\_64, avec
-pagination et système de fichier. Au final, nous avons un ordonanceur une
-interface utilisateur-machine avancée, et un début de pagination.
+\texttt{picOS} est un micronoyau pour \texttt{i386-elf}. Dans un premier temps, nous
+voulions coder un système d'exploitation pour architecture \texttt{x86\_64}, avec
+pagination et système de fichier. Au final, nous avons un début d'ordonnanceur, une 
+interface utilisateur - machine basique et un début de pagination.
 
 Toutes les fonctionnalités de notre OS ont été intégralement codées par nos
 soins, à l'exception notable du chargeur d'amorçage. Nous nous sommes beaucoup
-inspirés des articles d'OSDev (\url{osdev.org}), mais tout notre code est
+inspirés des articles d'OSDev (\url{osdev.org}), mais l'ensemble de notre code est
 original.
 
 \subsection{Architecture générale}
@@ -38,9 +38,9 @@ trois grandes parties~:
   \item La bibliothèque C : le dossier \texttt{libc} contient toutes les
     fonctions relatives au noyau. Cela comporte l'interface pour les appels
     système, l'ordonanceur, les structures de données et l'allocation mémoire.
-  \item Les scripts : le dossier \texttt{scripts} contiens tous les scripts
+  \item Les scripts : le dossier \texttt{scripts} contient tous les scripts
     nécessaires à la compilation. C'est ce qui relie les différentes parties
-    entre pour construire l'image disque.
+    entre elles pour construire l'image disque.
 \end{itemize}
 
 \section{Aspects techniques}
@@ -50,7 +50,7 @@ trois grandes parties~:
 Pour nous faciliter la tâche, nous avons eu recours à différents utilitaires
 externes. Outre les outils standards (comme l'utilisation de Git ou de
 Makefiles), nous nous sommes servis du chargeur d'amorçage GRUB et du simulateur
-de machine virtuelle Qemu.
+de machine virtuelle Qemu. A noter que nous nous sommes également servis de GDB pour inspecter la mémoire et les registres pendant l'exécution ; ainsi que de objdump, od et readelf pour examiner les exécutables binaires produits.
 
 \subsubsection{Git}
 
@@ -65,24 +65,34 @@ la branche Rendu contient la version du projet présentée à la soutenance.
 Notre système d'exploitation étant codé en C, nous avons utilisé GCC pour le
 compiler. Néanmoins, puisque nous compilons pour une autre machine que celles
 sur lesquelles nous travaillons (notre système d'exploitation est conçu pour
-architecture i386-elf), nous avons dû reconfigurer GCC pour qu'elle fasse de la
+architecture i386-elf), nous avons dû reconfigurer GCC pour qu'il fasse de la
 compilation croisée.
 
 Les fichiers binaires de cette compilation de GCC sont en annexe du projet, et
 ils sont en théorie censés convenir pour les machines tournant sous Unix. Si
 cela ne fonctionne pas, il vous suffit de vous-même recompiler GCC pour
-i386-elf.
+i386-elf (tutoriel du cross-compiler x86 sur OSDev).
 
-\subsubsection{Makefiles}
+\subsubsection{Makefile}
 
-Martin Janin
+Le Makefile est celui tiré de l'organisation de projet Meaty Skeleton d'OSDev,
+largement modifié.
+Les scripts bash ont également été largement améliorés, afin de faciliter la 
+compilation, notamment avec l'option --gdb.
 
 \subsubsection{GRUB}
 
-Martin Janin
+Nous avons étudié la spécification du standard multiboot (1) afin que GRUB puisse
+amorcer notre kernel. Le chargement en mémoire du noyau s'avère complexe : dans la
+ version avec le paging, le noyau est décomposé en deux parties. En effet, les liens
+ de la partie inférieure sont édités pour fonctionner lorsqu'elle est chargée en bas 
+ la mémoire, tandis que les liens de la partie supérieure sont édités pour fonctionner
+ lorsque qu'elle est chargée en haut de la mémoire (0xFF000000).
 
-\subsection{Ordonancement}
+\subsection{Ordonnancement}
 
+
+<<<<<<< Updated upstream
 Pour l'ordonancement des processus, nous avons théorisé et commencé à
 implémenter une interface d'ordonnancement non préemptive. L'objectif des appels
 systèmes implmentés est de permettre l'utilisation d'autres ordonnanceurs
@@ -90,6 +100,8 @@ preemptifs, du coté utilisateur. Ainsi, ces ordonnanceurs pourraient etre
 rajouter à la librairie C.
 Une interface spécifique est également prévu avec les pilotes de périphériques
 pour permettre par exemple au processus de configurer des comptes à rebour.
+=======
+>>>>>>> Stashed changes
 
 \subsection{Gestion de la mémoire}
 
@@ -118,7 +130,40 @@ blocs libres.
 
 \subsection{Interface utilisateur-machine}
 
-Antonin Reitz
+\subsubsection{Clavier}
+
+Un driver clavier PS2 est implémenté, le scan code set 2 est utilisé. La keymap utilisée
+est la keymap classique AZERTY. Afin de différencier les différentes touches, et les
+différents signaux que chacune envoie (pression / relâchement), une disjonction de cas
+extrêmement lourde est nécessaire. Celle-ci constitue le seul cas de code généré de notre
+projet.
+Dans le dossier \texttt{aux_kbd_kmp} se trouvent le code Python à l'origine de ce code généré,
+produit en fonction de la keymap stockée dans le fichier texte dans le même répertoire.
+Un fichier C est ensuite produit (\texttt{gc.c}), qui n'a plus qu'à être sommairement copiée.
+(Les modifications relativement rares de cette partie sont à l'origine de la relative lourdeur
+de la modification de celle-ci.)
+L'implémentation du driver PS2 est classique, il s'agit d'une simple file représetée par un 
+tableau circulaire.
+
+\subsubsection{Shell}
+
+Afin de permettre une interaction avec la machine qui commence tout juste à être intéressante, 
+un shell avec des commandes basiques a été implémenté. L'essentiel de ces commandes est en lien 
+avec le système de fichiers présenté dans la sous-sous-section.
+Seules des commandes simples sont actuellement implémentées, bien qu'un système de redirections 
+soit désormais simple à implémenter, ne nécessitant que quelques heures de travail.
+
+\subsubsection{Système de fichiers virtuel}
+
+Le malloc optimisé n'a pas été utilisé, notamment car celui-ci avait été réalisé en supposant
+que le paging marcherait. Des tableaux de grande taille ont été utilisés pour représenter
+la RAM, associés à un malloc simplissime, mais qui marche.
+
+Le système de fichiers, qualifié de virtuel car ne correspondant qu'à des variables stockées
+dans la RAM, est lui aussi très simple.
+Les opérations possibles sont les opérations classiques : le modèle de système de fichiers
+réalisé semble permettre l'implémentation relativement simple de commandes plus élaborées ayant
+un effet sur celui-ci en quelques heures de travail.
 
 \section{Perspectives d'amélioration}
 
