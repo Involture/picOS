@@ -61,6 +61,7 @@ void filesystem_write_file_byte(uint16_t, uint8_t, bool, uint32_t);
 uint8_t filesystem_read_file_byte(uint16_t, uint32_t);
 
 void filesystem_change_dir(uint16_t);
+void filesystem_change_dir_for_parent(void);
 uint16_t filesystem_get_cwd(void);
 
 void filesystem_dir_add_element(uint16_t, uint16_t);

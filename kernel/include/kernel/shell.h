@@ -73,6 +73,7 @@ void shell_kwds_array_append_filesystem(void) {
 	shell_kwds_array_append("pwd");
 	shell_kwds_array_append("mkdir");
 	shell_kwds_array_append("cd");
+	shell_kwds_array_append("kdp");
 	shell_kwds_array_append("ls");
 	shell_kwds_array_append("rmdir");
 	shell_kwds_array_append("rm");

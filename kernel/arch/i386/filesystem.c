@@ -25,7 +25,7 @@ void p162(uint16_t n) {
 
 
 void* malloc(size_t sz){
-	printf("malloc\n");
+	// printf("malloc\n");
 	uint8_t* a = memory + memory_pos;
 	memory_pos += sz;
 	return a;
@@ -277,7 +277,7 @@ uint8_t filesystem_read_file_byte(uint16_t iid, uint32_t offset) {
 	uint8_t data;
 	if (file.i_addr_a + offset < file.i_addr_b) {
 		data = file.i_addr_a[offset];
-		printf("<<%x>>", data);
+		// printf("%x|", data);
 		return data;
 	} else {
 		return 42;
@@ -297,6 +297,14 @@ void filesystem_change_dir(uint16_t iid) {
 	}
 }
 
+void filesystem_change_dir_for_parent() {
+	struct inode file = filesystem_inodes[filesystem_get_cwd()];
+
+	uint16_t new_id = file.i_parent_id;
+
+	filesystem_change_dir(new_id);
+}
+
 uint16_t filesystem_get_cwd(void) {
 	return filesystem_current_dir_inode;
 }
@@ -306,8 +314,8 @@ void filesystem_read_file(uint16_t iid) {
 
 	for (uint32_t i = 0; i < file.i_size; ++i)
 	{
-		printf("%x", i);
-		printf("%x ", filesystem_read_file_byte(iid, i));
+		// printf("%x", i);
+		printf("%x| ", filesystem_read_file_byte(iid, i));
 	}
 }
 

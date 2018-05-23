@@ -59,9 +59,13 @@ int cmd_cd (char* a) {
 		filesystem_change_dir(b);
 		printf("%s\n", filesystem_find_fn_from_id(filesystem_get_cwd()));;
 	} else {
-		printf("not found\n");
+		printf("not found!!!\n");
 	}
 	return 0;
+}
+
+int cmd_kdp (char* a) {
+	filesystem_change_dir_for_parent();
 }
 
 int cmd_ls (char *a) {
@@ -85,7 +89,7 @@ int cmd_ls (char *a) {
 
 int cmd_cat (char* a) {
 	uint16_t b = filesystem_find_id_from_fn(a);
-	printf("shit\n");
+	printf("<%x>\n", b);
 	if (b != 0) {
 		filesystem_read_file(b);
 	} else {
@@ -139,7 +143,8 @@ static struct {
 	{ "pwd", cmd_pwd },
 	{ "rm", cmd_rm },
 	{ "rmdir", cmd_rmdir },
-	{ "debug", cmd_debug }
+	{ "debug", cmd_debug },
+	{ "kdp", cmd_kdp }
 };
 
 #endif
