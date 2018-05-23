@@ -48,39 +48,45 @@ static void shell_kwds_array_append(char* kwd) {
 
 // temp_shell_kwds_array_pos = 
 void shell_kwds_array_append_misc(void) {
-	shell_kwds_array_append("alias");
+	// shell_kwds_array_append("alias");
 	shell_kwds_array_append("basename");
-	shell_kwds_array_append("cal");
-	shell_kwds_array_append("date");
+	// shell_kwds_array_append("cal");
+	// shell_kwds_array_append("date");
 	shell_kwds_array_append("dirname");
 	shell_kwds_array_append("echo");
 	shell_kwds_array_append("expr");
 	shell_kwds_array_append("false");
-	shell_kwds_array_append("man");
+	// shell_kwds_array_append("man");
 	shell_kwds_array_append("printf");
 	shell_kwds_array_append("read");
+	shell_kwds_array_append("true");	
+
+	shell_kwds_array_append("debug");
+}
+
+void shell_kdws_array_append_time(void) {
 	shell_kwds_array_append("sleep");
-	shell_kwds_array_append("tee");
 	shell_kwds_array_append("time");
-	shell_kwds_array_append("touch");
-	shell_kwds_array_append("true");
-	
-	shell_kwds_array_append("mkdir");
 }
 
 void shell_kwds_array_append_filesystem(void) {
-	shell_kwds_array_append("cat");
+	shell_kwds_array_append("pwd");
+	shell_kwds_array_append("mkdir");
 	shell_kwds_array_append("cd");
-	shell_kwds_array_append("chown");
-	shell_kwds_array_append("chmod");
+	shell_kwds_array_append("ls");
+	shell_kwds_array_append("rmdir");
+	shell_kwds_array_append("rm");
+
+	shell_kwds_array_append("cat");
 	shell_kwds_array_append("cp");
+	shell_kwds_array_append("mv");
+
+	// shell_kwds_array_append("touch");
+	// shell_kwds_array_append("chown");
+	// shell_kwds_array_append("chmod");
 	// shell_kwds_array_append("file");
 	// shell_kwds_array_append("find");
-	shell_kwds_array_append("ls");
-	shell_kwds_array_append("mv");
-	shell_kwds_array_append("pwd");
-	shell_kwds_array_append("rm");
-	shell_kwds_array_append("rmdir");
+	// shell_kwds_array_append("tee");
 }
 
 void shell_kwds_array_append_processes() {

@@ -16,6 +16,7 @@
 #include <proc.h>
 #include <syscalls/proc.h>
 #include <kernel/pit.h>
+#include <kernel/filesystem.h>
 
 void kernel_init(void) {
   tty_ext_initialize();
@@ -36,8 +37,11 @@ void kernel_init(void) {
   // step 1
   // kernel/arch/i386/ps2_ctrl.c
   ps2_ctrl_init();
+
+
   sysenter_init();
   // pit_init();
+  filesystem_init();
 }
 
 void kernel_main(struct multiboot_info_t* grub_info) {

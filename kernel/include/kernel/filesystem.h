@@ -8,9 +8,9 @@
 #include <stdbool.h>
 
 #define FILESYSTEM_INODE_BLOCKS_MAX_NB 8
-#define FILESYSTEM_ELEMENTS_MAX_NB 65536
+#define FILESYSTEM_ELEMENTS_MAX_NB 65535
 
-// 16 + 16 + 1 + 16 + 32 + 32 + 8 = 121 bits used for 1 inode
+// 16 + ... + 16 + 1 + 16 + 16 + 32 + 32 >= 129 bits used for 1 inode
 struct inode {
 	uint16_t i_id;
 	char* i_filename;
@@ -22,7 +22,6 @@ struct inode {
 	uint8_t* i_addr_a;
 	uint8_t* i_addr_b; 
 };
-
 
 // init0
 void filesystem_init(void);
@@ -38,6 +37,7 @@ uint16_t filesystem_new_file(char*, bool);
 // returns the id of the inode corresponding to the deleted file : if 0 error
 uint16_t filesystem_delete_file(uint16_t);
 void filesystem_clear_file(uint16_t);
+void filesystem_clear_dir(uint16_t);
 
 /* id = f : x \mapsto x, with some side effects */
 // returns the id of the inode corresponding to the "opened" file : if 0 error
@@ -49,7 +49,7 @@ uint16_t filesystem_close_file(uint16_t);
 /* symmetry due to the existence of pipes */
 // takes inode id, pointer to a buffer, and the number of bits to read
 // returns the number of bits that have been read : if < 0 error
-int16_t filesystem_read_file(uint16_t, void*, uint16_t);
+// int16_t filesystem_read_file(uint16_t, void*, uint16_t);
 // takes inode id, pointer to a buffer, and the number of bits to write
 // returns the number of bits that have been wrote : if < 0 error
 int16_t filesystem_write_file(uint16_t, void*, uint16_t);
@@ -59,5 +59,21 @@ int16_t filesystem_write_file(uint16_t, void*, uint16_t);
 // particular cases of the two previous functions
 void filesystem_write_file_byte(uint16_t, uint8_t, bool, uint32_t);
 uint8_t filesystem_read_file_byte(uint16_t, uint32_t);
+
+void filesystem_change_dir(uint16_t);
+uint16_t filesystem_get_cwd(void);
+
+void filesystem_dir_add_element(uint16_t, uint16_t);
+void* filesystem_dir_read_elements(uint16_t);
+void filesystem_dir_remove_element(uint16_t, uint16_t);
+
+void filesystem_read_file(uint16_t);
+
+void fs_debug(void);
+void fs_debug_malloc(void);
+
+void* malloc(size_t);
+
+void fs_correct_fn(uint16_t, char*);
 
 #endif
