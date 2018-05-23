@@ -1,5 +1,4 @@
 cross_compiler/
-path
 libc_not_used_for_now
 isodir
 sysroot
