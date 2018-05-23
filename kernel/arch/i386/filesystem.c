@@ -177,7 +177,9 @@ uint16_t filesystem_new_file(char* filename, bool is_a_dir) {
 		.i_addr_b = NULL
 	};
 	filesystem_inodes[iid] = new_inode;
+	printf("fuck");
 	filesystem_dir_add_element(filesystem_current_dir_inode, iid);
+	printf("lourd");
 
 	filesystem_inodes_pos += 1;
 	// p162(filesystem_inodes_pos);
@@ -318,7 +320,7 @@ void fs_debug(void) {
 		printf("%x : ", temp_inode.i_id);
 		printf("%s ; ", temp_inode.i_filename);
 		printf("%x | ", temp_inode.i_parent_id);
-		printf("%x \\ ", (unsigned char) temp_inode.i_size);
+		printf("%x \\ ", temp_inode.i_nb_elements);
 		filesystem_read_file(temp_inode.i_id);
 		printf("\n");
 	}
@@ -326,8 +328,11 @@ void fs_debug(void) {
 
 
 void fs_debug_malloc(void) {
-	for (unsigned int i = 0; i < 15; ++i)
+
+	printf("\n");
+	for (unsigned int i = 0; i < 64; ++i)
 	{
-		printf("\n%x : %c", memory[i], memory[i]);
+		printf("%x : %c ;", memory[i], memory[i]);
 	}
+	printf("\n");
 }
